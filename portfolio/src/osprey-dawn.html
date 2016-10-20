@@ -1,0 +1,132 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+
+<link rel="import" href="od-portrait.html">
+<link rel="import" href="hero-pager.html">
+<link rel="import" href="grey-box-work.html">
+<link rel="import" href="grey-box-thoughts.html">
+
+<dom-module id="osprey-dawn">
+  <template>
+
+    <style>
+      :host {
+        @apply(--layout-fullbleed);
+        overflow: hidden;
+      }
+    </style>
+
+    <od-portrait id="portrait"></od-portrait>
+    <neon-animated-pages
+      id="pages"
+      attr-for-selected="id"
+      selected="{{selected}}"
+      on-neon-animation-finish="pageChanged">
+
+      <hero-pager id="hero"></hero-pager>
+      <grey-box-work id="work"></grey-box-work>
+      <grey-box-thoughts id="thoughts"></grey-box-thoughts>
+
+    </neon-animated-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'osprey-dawn',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'osprey-dawn',
+        },
+        selected: {
+          type: String
+        },
+        selectedNum: {
+          value: 0
+        },
+        selectedValues: {
+          type: Array
+        }
+      },
+
+      listeners: {
+        'wheel' : 'changePage',
+        'to-about' : 'aboutPressed',
+        'to-hero' : 'backPressed',
+        'show-hero' : 'toHero',
+        'show-work' : 'toWork',
+        'show-thoughts' : 'toThoughts'
+      },
+
+      ready: function() {
+        var readyArray = [];
+        for (var i = 0; i < this.$.pages.children.length; ++i) {
+          readyArray.push(this.$.pages.children[i].id);
+        };
+        this.selectedValues = readyArray;
+        this.selected = this.selectedValues[this.selectedNum];
+      },
+
+      changePage: function(event) {
+        var wDelta = event.wheelDeltaY / 120;
+        var indexLength = this.selectedValues.length;
+
+        if ((wDelta < -2) && (this.selectedNum < indexLength - 1)) {
+          if (this.selectedNum === 0) {
+            this.$.portrait.downSlide();
+          }
+          this.selected = this.selectedValues[++this.selectedNum];
+          this.unlisten(this, 'wheel', 'changePage');
+        } else if ((2 < wDelta) && (0 < this.selectedNum)) {
+          if (this.selectedNum === 1) {
+            this.$.portrait.upSlide();
+          }
+          this.selected = this.selectedValues[--this.selectedNum];
+          this.unlisten(this, 'wheel', 'changePage');
+        };
+      },
+
+      toHero: function() {
+        this.selectedNum = 0;
+        this.selected = this.selectedValues[this.selectedNum];
+        this.$.portrait.upSlide();
+      },
+
+      toWork: function() {
+        if (this.selectedNum === 0) {
+          this.$.portrait.downSlide();
+        }
+        this.selectedNum = 1;
+        this.selected = this.selectedValues[this.selectedNum];
+      },
+
+      toThoughts: function() {
+        if (this.selectedNum === 0) {
+          this.$.portrait.downSlide();
+        }
+        this.selectedNum = 2;
+        this.selected = this.selectedValues[this.selectedNum];
+      },
+
+      aboutPressed: function() {
+        this.unlisten(this, 'wheel', 'changePage');
+        this.$.portrait.aboutSlide();
+      },
+
+      backPressed: function() {
+        this.listen(this, 'wheel', 'changePage');
+        this.$.portrait.heroSlide();
+      },
+
+      pageChanged: function() {
+        this.listen(this, 'wheel', 'changePage');
+      }
+
+    });
+  </script>
+</dom-module>

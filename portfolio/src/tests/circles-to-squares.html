@@ -1,0 +1,57 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+
+<link rel="import" href="cts-circles.html">
+<link rel="import" href="cts-squares.html">
+
+<dom-module id="circles-to-squares">
+  <template>
+
+    <style>
+      :root {
+        --color-one: var(--paper-cyan-300);
+        --color-two: var(--paper-orange-500);
+      }
+
+      neon-animated-pages {
+        @apply(--layout-fullbleed);
+      }
+    </style>
+
+    <neon-animated-pages
+      id="pages"
+      selected="0">
+
+      <cts-circles on-circle-click="_onCircleClick"></cts-circles>
+      <cts-squares on-click="_onSquareClick"></cts-squares>
+
+    </neon-animated-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'circles-to-squares',
+
+      properties: {
+        selected: {
+          value: 0,
+        },
+      },
+
+      _onCircleClick: function(event) {
+        this.$.pages.selected = 1;
+      },
+
+      _onSquareClick: function(event) {
+        this.$.pages.selected = 0;
+      },
+
+
+    });
+  </script>
+</dom-module>

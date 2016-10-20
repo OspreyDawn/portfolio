@@ -1,0 +1,46 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+
+<link rel="import" href="od-hero-one.html">
+<link rel="import" href="od-hero-two.html">
+
+<dom-module id="od-hero-test">
+  <template>
+
+    <style>
+      neon-animated-pages {
+        @apply(--layout-fullbleed);
+      }
+    </style>
+
+    <neon-animated-pages
+      selected="[[selected]]"
+      on-tap="next">
+
+      <od-hero-one></od-hero-one>
+      <od-hero-two></od-hero-two>
+
+    </neon-animated-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'od-hero-test',
+
+      properties: {
+        selected: {
+          value: 0,
+        },
+      },
+
+      next: function() {
+        this.selected = this.selected === 1 ? 0 : this.selected + 1;
+      }
+
+    });
+  </script>
+</dom-module>

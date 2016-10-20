@@ -1,0 +1,7 @@
+{
+  "name": "ospreydawn",
+  "short_name": "ospreydawn",
+  "description": "Portfolio site for Max O&#39;Brien",
+  "start_url": "/",
+  "display": "standalone"
+}

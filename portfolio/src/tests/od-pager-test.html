@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-swipeable-pages/iron-swipeable-pages.html">
+
+<dom-module id="od-pager-test">
+  <template>
+
+    <style>
+
+    iron-swipeable-pages {
+      @apply(--layout-fullbleed);
+      @apply(--layout-flex);
+    }
+
+    iron-swipeable-pages > div {
+      color: white;
+      background: blue;
+      @apply(--layout-horizontal);
+      @apply(--layout-center-center);
+    }
+
+    </style>
+
+    <div>
+      <iron-swipeable-pages selected="0">
+        <div>One</div>
+        <div>Two</div>
+        <div>Three</div>
+      </iron-swipeable-pages>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'od-pager-test',
+
+      properties: {
+        selected: {
+          value: 0,
+        },
+        prop1: {
+          type: String,
+          value: 'od-pager',
+        },
+      },
+
+    });
+
+  </script>
+</dom-module>
