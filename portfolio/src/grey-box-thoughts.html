@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/neon-page-behavior/neon-page-behavior.html">
@@ -6,42 +7,64 @@
 <link rel="import" href="od-nav-bar.html">
 <link rel="import" href="od-thoughts-items.html">
 
-<dom-module id="grey-box-thoughts">
+<dom-module id="grey-box-thoughts" attributes="query">
   <template>
 
     <style>
+      :host {
+        touch-action: none;
+      }
       .container {
         max-width: 77.5rem;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
         margin: 0 auto;
       }
       #titleContainer {
         position: relative;
+        left: -3.25rem;
+        z-index: 0;
       }
       #pageTitle {
-        position: relative;
         color: lightgrey;
         font-size: 12.5rem;
         font-weight: bolder;
         line-height: 0.75;
-        left: -3.25rem;
-        z-index: 0;
         pointer-events: none;
       }
       #thoughtsContent {
         display: block;
         position: relative;
-        top: -5.25rem;
+        top: -6rem;
         bottom: 0;
         z-index: 2;
       }
+      /* Mobile Screen Layout Styles */
+      #titleContainer[mobile-layout] {
+        position: static;
+        text-align: center;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+      #titleContainer[mobile-layout] #pageTitle {
+        font-size: 4.5rem;
+      }
+      #thoughtsContent[mobile-layout] {
+        top: -3rem;
+      }
     </style>
 
-    <od-nav-bar id="navBar"></od-nav-bar>
+    <iron-media-query
+      query="{{query}}"
+      query-matches="{{smallScreen}}">
+    </iron-media-query>
 
-    <div id="titleContainer" class="container">
+    <od-nav-bar id="navBar" query="{{query}}"></od-nav-bar>
+
+    <div id="titleContainer" class="container" mobile-layout$="{{smallScreen}}">
       <div id="pageTitle">THOUGHTS</div>
-      <od-thoughts-items id="thoughtsContent"></od-thoughts-items>
+    </div>
+    <div id="thoughtsContent" class="container" mobile-layout$="{{smallScreen}}">
+      <od-thoughts-items query="{{query}}"></od-thoughts-items>
     </div>
 
   </template>
@@ -183,11 +206,15 @@
 
         sharedElements: {
           value: function() {
-            return {
-              'hero': this.$.navBar.getLogo()
-            }
+            return {}
           }
         }
+      },
+
+      ready: function() {
+        this.async(function() {
+          this.sharedElements['hero'] = this.$.navBar.getLogo();
+        });
       }
     });
   </script>

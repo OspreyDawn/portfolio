@@ -5,7 +5,7 @@
 <link rel="import" href="grey-box-hero.html">
 <link rel="import" href="grey-box-about.html">
 
-<dom-module id="hero-pager">
+<dom-module id="hero-pager" attributes="query">
   <template>
 
     <style>
@@ -14,8 +14,8 @@
       id="pages"
       selected="[[selected]]">
 
-      <grey-box-hero id="heroPage"></grey-box-hero>
-      <grey-box-about></grey-box-about>
+      <grey-box-hero id="heroPage" query="{{query}}"></grey-box-hero>
+      <grey-box-about query="{{query}}"></grey-box-about>
 
     </neon-animated-pages>
 

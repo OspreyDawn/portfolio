@@ -1,22 +1,26 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
-<dom-module id="grey-box-hero">
+<dom-module id="grey-box-hero" attributes="query">
   <template>
 
     <style>
+      :host {
+        touch-action: none;
+      }
       .container {
         max-width: 77.5rem;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
         margin: 0 auto;
         @apply(--layout-horizontal);
       }
       .container > div {
-        margin-top: 10rem;
+        margin-top: 2rem;
       }
       .heroContainer {
-        max-width: 700px;
+        max-width: 42rem;
       }
       .heroContainer > div {
         margin-bottom: 1rem;
@@ -52,9 +56,33 @@
       #divider {
         margin: 0 1rem;
       }
+      /* Mobile Screen Layout Styles */
+      .container[mobile-layout] {
+        @apply(--layout-horizontal);
+      }
+      .container[mobile-layout] > div {
+        margin-top: 2rem;
+      }
+      .container[mobile-layout] .heroContainer > div {
+        text-align: center;
+        @apply(--layout-center-justified);
+      }
+      .container[mobile-layout] .button {
+        display: block;
+      }
+      .container[mobile-layout] #logo {
+        width: 28px;
+        height: 42px;
+        margin: 0 auto 1rem auto;
+      }
     </style>
 
-    <div class="container">
+    <iron-media-query
+      query="{{query}}"
+      query-matches="{{smallScreen}}">
+    </iron-media-query>
+
+    <div class="container" mobile-layout$="{{smallScreen}}">
       <div id="heroContainer" class="heroContainer">
         <div id="logo"></div>
         <div id="sub-title">OSPREY DAWN IS</div>
@@ -85,7 +113,7 @@
             var neonElements = this.$.heroContainer.children;
             var neonArray = Array.prototype.slice.call(neonElements);
             return {
-              /* 'entry': [{
+              'entry': [{
                 name: 'cascaded-animation',
                 animation: 'fade-in-animation',
                 nodes: neonArray,
@@ -109,7 +137,7 @@
                 name: 'cascaded-animation',
                 animation: 'slide-left-animation',
                 nodes: neonArray
-              }], */
+              }],
             }
           }
         }
