@@ -148,16 +148,16 @@
       _onNeonAnimationFinish: function() {
         switch (this.currentState) {
           case buttonStates.SHOWPREV:
-            this.$.prev.style.visiblity = 'visible';
+            this.$.prev.style.opacity = 1;
             break;
           case buttonStates.SHOWNEXT:
-            this.$.next.style.visiblity = 'visible';
+            this.$.next.style.opacity = 1;
             break;
           case buttonStates.HIDEPREV:
-            this.$.prev.style.visiblity = 'hidden';
+            this.$.prev.style.opacity = 0;
             break;
           case buttonStates.HIDENEXT:
-            this.$.next.style.visiblity = 'hidden';
+            this.$.next.style.opacity = 0;
             break;
           default:
             console.log('lolwut');
