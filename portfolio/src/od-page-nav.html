@@ -43,9 +43,18 @@
   </template>
 
   <script>
+    buttonStates = {
+      SHOWPREV: 0,
+      SHOWNEXT: 1,
+      HIDEPREV: 2,
+      HIDENEXT: 3
+    };
+
     Polymer({
 
       is: 'od-page-nav',
+
+      currentState: buttonStates.SHOWNEXT,
 
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
 
@@ -91,7 +100,8 @@
 
       listeners: {
         'tap': '_onTap',
-        'hide-prev' : 'hidePrev'
+        'hide-prev' : 'hidePrev',
+        'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
       ready: function() {
@@ -108,23 +118,23 @@
       },
 
       showPrevButton: function() {
+        this.currentState = buttonStates.SHOWPREV;
         this.playAnimation('prev-entry');
-        this.$.prev.style.opacity = 1;
       },
 
       showNextButton: function() {
+        this.currentState = buttonStates.SHOWNEXT;
         this.playAnimation('next-entry');
-        this.$.next.style.opacity = 1;
       },
 
       hidePrevButton: function() {
+        this.currentState = buttonStates.HIDEPREV;
         this.playAnimation('prev-exit');
-        this.$.prev.style.opacity = 0;
       },
 
       hideNextButton: function() {
+        this.currentState = buttonStates.HIDENEXT;
         this.playAnimation('next-exit');
-        this.$.next.style.opacity = 0;
       },
 
       getPrevButton: function() {
@@ -133,6 +143,25 @@
 
       getNextButton: function() {
         return this.$.next;
+      },
+
+      _onNeonAnimationFinish: function() {
+        switch (this.currentState) {
+          case buttonStates.SHOWPREV:
+            this.$.prev.style.visiblity = 'visible';
+            break;
+          case buttonStates.SHOWNEXT:
+            this.$.next.style.visiblity = 'visible';
+            break;
+          case buttonStates.HIDEPREV:
+            this.$.prev.style.visiblity = 'hidden';
+            break;
+          case buttonStates.HIDENEXT:
+            this.$.next.style.visiblity = 'hidden';
+            break;
+          default:
+            console.log('lolwut');
+        }
       }
 
     });

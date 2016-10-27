@@ -10,6 +10,7 @@
         width: 100vw;
         height: 100vh;
         position: absolute;
+        touch-action: none;
       }
       .flex {
         @apply(--layout-flex);
@@ -59,7 +60,15 @@
   </template>
 
   <script>
+    pageStates = {
+      HERO: 0,
+      ABOUT: 1,
+      BODY: 2
+    };
+
     Polymer({
+
+      currentState: pageStates.HERO,
 
       is: 'od-portrait',
 
@@ -89,8 +98,13 @@
         }
       },
 
+      listeners: {
+        "neon-animation-finish" : "_onNeonAnimationFinish"
+      },
+
       aboutSlide: function() {
-        if (750 > window.innerWidth) {
+        this.currentState = pageStates.ABOUT;
+        if (this.smallScreen) {
           this.animationConfig['about-slide'] = {
             name: 'transform-animation',
             node: this.$.portrait,
@@ -100,7 +114,6 @@
             }
           };
           this.playAnimation('about-slide');
-          this.$.portrait.style.transform = 'translateY(175%)';
         } else {
           this.animationConfig['about-slide'] = {
             name: 'transform-animation',
@@ -111,12 +124,12 @@
             }
           };
           this.playAnimation('about-slide');
-          this.$.portrait.style.transform = 'translateX(-83.5%)';
         }
       },
 
       heroSlide: function() {
-        if (750 > window.innerWidth) {
+        this.currentState = pageStates.HERO;
+        if (this.smallScreen) {
           this.animationConfig['hero-slide'] = {
             name: 'transform-animation',
             node: this.$.portrait,
@@ -127,7 +140,6 @@
             }
           };
           this.playAnimation('hero-slide');
-          this.$.portrait.style.transform = 'translateY(0)';
         } else {
           this.animationConfig['hero-slide'] = {
             name: 'transform-animation',
@@ -139,18 +151,35 @@
             }
           };
           this.playAnimation('hero-slide');
-          this.$.portrait.style.transform = 'translateY(0)';
         }
       },
 
       downSlide: function() {
+        this.currentState = pageStates.BODY;
         this.playAnimation('down-slide');
-        this.$.portrait.style.transform = 'translateY(80%)';
       },
 
       upSlide: function() {
+        this.currentState = pageStates.HERO;
         this.playAnimation('up-slide');
-        this.$.portrait.style.transform = 'translateY(0)';
+      },
+
+      _onNeonAnimationFinish: function() {
+        switch (this.currentState) {
+          case pageStates.HERO:
+            this.$.portrait.style.transform = 'none';
+            break;
+          case pageStates.ABOUT:
+            if (this.smallScreen) {
+              this.$.portrait.style.transform = 'translateY(175%)';
+            } else {
+              this.$.portrait.style.transform = 'translateX(-83.5%)';
+            }
+            break;
+          case pageStates.BODY:
+            this.$.portrait.style.transform = 'translateY(80%)';
+            break;
+        }
       }
 
     });

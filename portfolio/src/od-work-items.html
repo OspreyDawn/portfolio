@@ -83,9 +83,16 @@
   </template>
 
   <script>
+    pressedStates = {
+      PREVPRESS: 0,
+      NEXTPRESS: 1
+    };
+
     Polymer({
 
       is: 'od-work-items',
+
+      currentState: pressedStates.PREVPRESS,
 
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
 
@@ -102,11 +109,23 @@
           value: 0
         },
 
+        prevPosition: {
+          value: 0
+        },
+
+        nextPosition: {
+          value: 0
+        },
+
         animationConfig: {
           value: function() {
             return [];
           }
         }
+      },
+
+      listeners: {
+        'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
       ready: function() {
@@ -116,9 +135,9 @@
       measureView: function() {
         var containerW = this.$.itemContainer.offsetWidth;
         var itemW = this.$$('.workItem').offsetWidth;
-        var itemPad = 450 > window.innerWidth ? 24 : 64;
+        var itemPad = this.smallScreen ? 24 : 64;
 
-        if (450 > window.innerWidth) {
+        if (this.smallScreen) {
           this.viewModifier = containerW + itemPad;
           this.totalPages = this.testArray.length;
         } else if (1240 > window.innerWidth){
@@ -131,6 +150,7 @@
       },
 
       prevTap: function(event) {
+        this.currentState = pressedStates.PREVPRESS;
 
         if (this.pageSelect === 1) {
           this.$.pageNav.hidePrevButton();
@@ -143,7 +163,7 @@
         if (0 < this.pageSelect) {
           --this.pageSelect;
 
-          var prevPosition = this.pageSelect * this.viewModifier;
+          prevPosition = this.pageSelect * this.viewModifier;
 
           this.animationConfig['prev'] = {
             name: 'transform-animation',
@@ -153,12 +173,12 @@
           };
 
           this.playAnimation('prev');
-          this.$.itemContainer.style.transform = 'translateX(-' + prevPosition + 'px)';
         }
       },
 
       nextTap: function(event) {
         this.measureView();
+        this.currentState = pressedStates.NEXTPRESS;
 
         if (this.pageSelect === 0) {
           this.$.pageNav.showPrevButton();
@@ -167,7 +187,7 @@
         if ((this.pageSelect + 1) < (this.totalPages)) {
           ++this.pageSelect;
 
-          var nextPosition = this.pageSelect * this.viewModifier;
+          nextPosition = this.pageSelect * this.viewModifier;
 
           this.animationConfig['next'] = {
               name: 'transform-animation',
@@ -177,7 +197,6 @@
           };
 
           this.playAnimation('next');
-          this.$.itemContainer.style.transform = 'translateX(-' + nextPosition + 'px)';
         }
 
         if ((this.pageSelect + 1) >= (this.totalPages)) {
@@ -185,6 +204,18 @@
         }
       },
 
+      _onNeonAnimationFinish: function() {
+        switch (this.currentState) {
+          case pressedStates.PREVPRESS:
+            this.$.itemContainer.style.transform = 'translateX(-' + prevPosition + 'px)';
+            break;
+          case pressedStates.NEXTPRESS:
+            this.$.itemContainer.style.transform = 'translateX(-' + nextPosition + 'px)';
+            break;
+          default:
+            console.log('uwotm8');
+        }
+      }
     });
   </script>
 </dom-module>
