@@ -13,8 +13,10 @@
     <style>
       :host {
         @apply(--layout-fullbleed);
-        touch-action: none;
         overflow: hidden;
+      }
+      :host([small-screen]) {
+        @apply(--layout-vertical);
       }
       .container {
         max-width: 77.5rem;
@@ -34,7 +36,7 @@
         pointer-events: none;
       }
       #thoughtsContent {
-        display: block;
+        /* display: block; */
         position: relative;
         top: -6rem;
         bottom: 0;
@@ -42,9 +44,10 @@
       }
       /* Mobile Screen Layout Styles */
       #titleContainer[mobile-layout] {
+        width: 84vw;
         position: static;
         text-align: center;
-        @apply(--layout-horizontal);
+        @apply(--layout-vertical);
         @apply(--layout-center-center);
       }
       #titleContainer[mobile-layout] #pageTitle {
@@ -52,6 +55,9 @@
       }
       #thoughtsContent[mobile-layout] {
         top: -3rem;
+        margin-bottom: -2rem;
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
       }
     </style>
 
@@ -66,7 +72,7 @@
       <div id="pageTitle">THOUGHTS</div>
     </div>
     <div id="thoughtsContent" class="container" mobile-layout$="{{smallScreen}}">
-      <od-thoughts-items query="{{query}}"></od-thoughts-items>
+      <od-thoughts-items id="thoughtsItems" query="{{query}}"></od-thoughts-items>
     </div>
 
   </template>
@@ -82,6 +88,12 @@
       ],
 
       properties: {
+        smallScreen: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
+        },
+
         animationConfigWork: {
           value: function() {
             return {

@@ -13,8 +13,10 @@
     <style>
       :host {
         @apply(--layout-fullbleed);
-        touch-action: none;
         overflow: hidden;
+      }
+      :host([small-screen]) {
+        @apply(--layout-vertical);
       }
       .container {
         max-width: 77.5rem;
@@ -34,7 +36,7 @@
         pointer-events: none;
       }
       #workContent {
-        display: block;
+        /* display: block; */
         position: relative;
         top: -6rem;
         bottom: 0;
@@ -50,6 +52,12 @@
       }
       #workContent[mobile-layout] {
         top: -1.5rem;
+        margin: 0 0 -0.5rem 0;
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+      }
+      #workContent[mobile-layout] #workItems {
+        width: 100%;
       }
     </style>
 
@@ -64,7 +72,7 @@
       <div id="pageTitle">WORK</div>
     </div>
     <div id="workContent" class="container" mobile-layout$="{{smallScreen}}">
-      <od-work-items query="{{query}}"></od-work-items>
+      <od-work-items id="workItems" query="{{query}}"></od-work-items>
     </div>
 
   </template>
@@ -80,9 +88,10 @@
       ],
 
       properties: {
-        mobileScreen: {
-          type: Boolean,
-          value: false
+        smallScreen: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true
         },
 
         animationConfigThoughts: {
