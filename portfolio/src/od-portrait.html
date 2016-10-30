@@ -29,6 +29,9 @@
         background: cornflowerblue;
         margin-right: -11.25rem;
       }
+      #portrait[tablet-layout] {
+        margin-bottom: -25rem;
+      }
       /* Mobile Screen Layout Styles */
       :host([small-screen]) {
       }
@@ -56,9 +59,14 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
+    <iron-media-query
+      query="(max-width: 1240px)"
+      query-matches="{{containerResize}}">
+    </iron-media-query>
+
     <div class="container" mobile-layout$="{{smallScreen}}">
       <div class="flex"></div>
-      <div id="portrait"></div>
+      <div id="portrait" tablet-layout$="{{containerResize}}"></div>
     </div>
 
   </template>
