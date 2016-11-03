@@ -1,0 +1,115 @@
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="od-icons.html">
+
+<dom-module id="od-ambient-icons">
+  <template>
+    <style>
+      iron-icon {
+        display: block;
+        position: absolute;
+        z-index: 0;
+        width: 64px;
+        height: 64px;
+        opacity: 0.28;
+        top: calc(50% - 32px);
+        left: calc(50% - 32px);
+      }
+    </style>
+  </template>
+
+  <script>
+    calcAnim = function(element) {
+      var xEnd, yEnd;
+      var animKey = [];
+      var animTime;
+      var mainAxis = Math.random() < 0.5 ? true : false;
+      var durationLength = 24000
+      var timingDuration = Math.random() * durationLength;
+      var timingDelay = Math.random() * 2500;
+
+      var pathDirection = function() {
+        if (Math.random() < 0.5) {
+          return 1;
+        } else {
+          return -1;
+        }
+      }
+
+      if (timingDuration < (durationLength / 2)) {
+        timingDuration = timingDuration + (durationLength / 2);
+      }
+
+      if (mainAxis) {
+        xEnd = (window.innerWidth / 2) * pathDirection();
+        yEnd = (window.innerHeight / 2) * Math.random() * pathDirection();
+      } else {
+        xEnd = (window.innerWidth / 2) * Math.random() * pathDirection();
+        yEnd = (window.innerHeight / 2) * pathDirection();
+      }
+
+      animKey = [{
+          transform: 'translateX(0) translateY(0) rotate(0deg)',
+          opacity: 0.28
+        }, {
+          transform: 'translateX(' + xEnd + 'px) translateY(' + yEnd + 'px) rotate(360deg)',
+          opacity: 0
+        }];
+
+      animTime = {
+          duration: timingDuration,
+          delay: timingDelay
+        };
+
+      var definedAnim = element.animate(animKey, animTime);
+
+      definedAnim.onfinish = function() {
+        calcAnim(element);
+      }
+    }
+
+    Polymer({
+
+      is: 'od-ambient-icons',
+
+      properties: {
+        iconNameList: {
+          type: Array,
+          value: ['creative-commons',
+                  'twitter',
+                  'facebook',
+                  'gavel',
+                  'expand',
+                  'images',
+                  'video',
+                  'audio',
+                  'cc-attribution']
+        }
+      },
+
+      listeners: {
+        'icon-animation-finish' : 'reRun'
+      },
+
+      ready: function() {
+        for(i = 0; i < this.iconNameList.length; i++) {
+          calcAnim(this.createIcon(this.iconNameList[i]));
+        }
+      },
+
+      test: function() {
+        console.log('fired!');
+      },
+
+      createIcon: function(iconName) {
+        var newElement = document.createElement('iron-icon');
+
+        newElement.setAttribute('icon', 'od-icons:' + iconName);
+
+        Polymer.dom(this.root).appendChild(newElement);
+
+        return newElement;
+      }
+    });
+  </script>
+</dom-module>
