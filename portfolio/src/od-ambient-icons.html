@@ -9,24 +9,23 @@
         display: block;
         position: absolute;
         z-index: 0;
-        width: 64px;
-        height: 64px;
-        opacity: 0.28;
-        top: calc(50% - 32px);
-        left: calc(50% - 32px);
+        width: 40px;
+        height: 40px;
+        top: calc(50% - 20px);
+        left: calc(50% - 20px);
       }
     </style>
   </template>
 
   <script>
-    calcAnim = function(element) {
+    calcAnim = function(element, initial, canvasX, canvasY) {
       var xEnd, yEnd;
       var animKey = [];
       var animTime;
       var mainAxis = Math.random() < 0.5 ? true : false;
       var durationLength = 24000
       var timingDuration = Math.random() * durationLength;
-      var timingDelay = Math.random() * 2500;
+      var timingDelay = initial ? Math.random() * 2500 : 0;
 
       var pathDirection = function() {
         if (Math.random() < 0.5) {
@@ -41,11 +40,11 @@
       }
 
       if (mainAxis) {
-        xEnd = (window.innerWidth / 2) * pathDirection();
-        yEnd = (window.innerHeight / 2) * Math.random() * pathDirection();
+        xEnd = (canvasX / 2) * pathDirection();
+        yEnd = (canvasY / 2) * Math.random() * pathDirection();
       } else {
-        xEnd = (window.innerWidth / 2) * Math.random() * pathDirection();
-        yEnd = (window.innerHeight / 2) * pathDirection();
+        xEnd = (canvasX / 2) * Math.random() * pathDirection();
+        yEnd = (canvasY / 2) * pathDirection();
       }
 
       animKey = [{
@@ -64,7 +63,7 @@
       var definedAnim = element.animate(animKey, animTime);
 
       definedAnim.onfinish = function() {
-        calcAnim(element);
+        calcAnim(element, false, canvasX, canvasY);
       }
     }
 
@@ -84,21 +83,35 @@
                   'video',
                   'audio',
                   'cc-attribution']
+        },
+        canvasWidth: {
+          value: 0
+        },
+        canvasHeight: {
+          value: 0
+        },
+        iconsToAnimate: {
+          type: Array,
+          value: []
         }
-      },
-
-      listeners: {
-        'icon-animation-finish' : 'reRun'
       },
 
       ready: function() {
-        for(i = 0; i < this.iconNameList.length; i++) {
-          calcAnim(this.createIcon(this.iconNameList[i]));
-        }
-      },
+        window.addEventListener('WebComponentsReady', function(p) {
+          return function (e) {
+            p.canvasWidth = p.$$('iron-icon').parentElement.offsetWidth;
+            p.canvasHeight = p.$$('iron-icon').parentElement.offsetHeight;
 
-      test: function() {
-        console.log('fired!');
+            console.log(p.canvasWidth, p.canvasHeight);
+
+            for(i = 0; i < p.iconsToAnimate.length; i++) {
+              calcAnim(p.iconsToAnimate[i], true, p.canvasWidth, p.canvasHeight);
+            }
+          } }(this));
+
+        for(i = 0; i < this.iconNameList.length; i++) {
+          this.createIcon(this.iconNameList[i]);
+        }
       },
 
       createIcon: function(iconName) {
@@ -108,8 +121,10 @@
 
         Polymer.dom(this.root).appendChild(newElement);
 
+        this.iconsToAnimate.push(newElement);
+
         return newElement;
-      }
+      },
     });
   </script>
 </dom-module>
