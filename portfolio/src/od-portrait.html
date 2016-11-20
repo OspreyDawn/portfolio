@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
 <link rel="import" href="od-ambient-icons.html">
+<link rel="import" href="od-animated-portrait.html">
 
 <dom-module id="od-portrait" attributes="query">
   <template>
@@ -31,12 +32,6 @@
         width: 54.5rem;
         height: 51rem;
         margin-right: -11.25rem;
-      }
-      #portraitImg {
-        width: 100%;
-        height: 100%;
-        background: url('images/img_portrait.png') no-repeat;
-        background-size: cover;
       }
       od-ambient-icons {
         position: absolute;
@@ -88,7 +83,7 @@
       <div class="flex"></div>
       <div id="portrait">
         <od-ambient-icons></od-ambient-icons>
-        <div id="portraitImg"></div>
+        <od-animated-portrait></od-animated-portrait>
       </div>
     </div>
 
@@ -145,6 +140,12 @@
 
       ready: function() {
         this.rePosition();
+
+        window.addEventListener('resize', function(p) {
+          return function() {
+            p.rePosition();
+          }
+        }(this));
       },
 
       rePosition: function() {
@@ -237,10 +238,6 @@
         }
       }
 
-    });
-
-    window.addEventListener('resize', function(event) {
-      document.querySelector("od-portrait").rePosition();
     });
   </script>
 </dom-module>

@@ -88,7 +88,7 @@
 
     <div class="container" mobile-layout$="{{smallScreen}}">
       <div id="heroContainer" class="heroContainer">
-        <div id="logo"></div>
+        <div id="logo" on-tap="loadAnimation"></div>
         <div id="sub-title">OSPREY DAWN IS</div>
         <div id="title">MAX O'BRIEN</div>
         <div id="hero-links">
@@ -109,7 +109,10 @@
 
       is: 'grey-box-hero',
 
-      behaviors: [Polymer.NeonAnimatableBehavior],
+      behaviors: [
+        Polymer.NeonAnimatableBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
 
       properties: {
         animationConfig: {
@@ -145,6 +148,38 @@
             }
           }
         }
+      },
+
+      ready: function() {
+        window.addEventListener('WebComponentsReady', function(p) {
+          return function() {
+            p.loadAnimation();
+          }
+        }(this));
+      },
+
+      loadAnimation: function() {
+        var neonElements = this.$.heroContainer.children;
+        var neonArray = Array.prototype.slice.call(neonElements);
+
+        this.animationConfig['load-in'] = [{
+          name: 'cascaded-animation',
+          animation: 'fade-in-animation',
+          nodes: neonArray,
+          timing: {
+            delay: 2500,
+            duration: 1000
+          }
+        }, {
+          name: 'cascaded-animation',
+          animation: 'slide-from-top-animation',
+          nodes: neonArray,
+          timing: {
+            delay: 2500,
+            duration: 1000
+          }
+        }];
+        this.playAnimation('load-in');
       },
 
       showAbout: function() {

@@ -13,6 +13,7 @@
         height: 40px;
         top: calc(50% - 20px);
         left: calc(50% - 20px);
+        opacity: 0;
       }
     </style>
   </template>
@@ -25,7 +26,7 @@
       var mainAxis = Math.random() < 0.5 ? true : false;
       var durationLength = 24000
       var timingDuration = Math.random() * durationLength;
-      var timingDelay = initial ? Math.random() * 2500 : 0;
+      var timingDelay = initial ? (Math.random() * 2500) + 2500 + 300 : 0;
 
       var pathDirection = function() {
         if (Math.random() < 0.5) {
@@ -98,16 +99,15 @@
 
       ready: function() {
         window.addEventListener('WebComponentsReady', function(p) {
-          return function (e) {
+          return function () {
             p.canvasWidth = p.$$('iron-icon').parentElement.offsetWidth;
             p.canvasHeight = p.$$('iron-icon').parentElement.offsetHeight;
-
-            console.log(p.canvasWidth, p.canvasHeight);
 
             for(i = 0; i < p.iconsToAnimate.length; i++) {
               calcAnim(p.iconsToAnimate[i], true, p.canvasWidth, p.canvasHeight);
             }
-          } }(this));
+          }
+        }(this));
 
         for(i = 0; i < this.iconNameList.length; i++) {
           this.createIcon(this.iconNameList[i]);
