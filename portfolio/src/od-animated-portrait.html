@@ -13,6 +13,7 @@
         fill-opacity: 0;
         stroke: lightgrey;
         stroke-width: 2;
+        transition: stroke-dashoffset 2.5s ease-out, fill-opacity 0.3s ease-in 2.5s;
       }
     </style>
 
@@ -26,18 +27,31 @@
 
       is: 'od-animated-portrait',
 
+      ready: function() {
+        var path = this.$$('#portraitPath');
+        var length = path.getTotalLength();
+
+        path.style.strokeDasharray = length + ' ' + length;
+        path.style.strokeDashoffset = -length;
+
+        window.addEventListener('WebComponentsReady', function() {
+          path.style.strokeDashoffset = 0;
+          path.style.fillOpacity = 1;
+        });
+      }
+
     });
 
-    window.addEventListener('WebComponentsReady', function() {
+    /*  window.addEventListener('WebComponentsReady', function() {
       var pathKey, fillKey = [];
       var path = document.querySelector('#portraitPath');
       var length = path.getTotalLength();
 
+      path.style.strokeDashoffset = 0;
+
       pathKey = [{
-        strokeDasharray: length,
         strokeDashoffset: -length
       },{
-        strokeDasharray: length,
         strokeDashoffset: 0
       }];
 
@@ -53,6 +67,6 @@
       fillAnim.onfinish = function() {
         path.style.fillOpacity = 1;
       }
-    });
+    }); */
   </script>
 </dom-module>
