@@ -34,6 +34,7 @@
         margin-right: -11.25rem;
       }
       od-ambient-icons {
+        overflow: hidden;
         position: absolute;
         z-index: -1;
         width: 200%;
@@ -42,7 +43,7 @@
         top: calc(51rem - 150%);
       }
       .container[tablet-layout] #portrait {
-        margin-bottom: -25rem;
+        margin-bottom: -14rem;
       }
       /* Mobile Screen Layout Styles */
       :host([small-screen]) {
@@ -63,7 +64,7 @@
       }
       .container[mobile-layout] od-ambient-icons {
         width: 100vw;
-        height: 100vh;
+        height: calc(100vh - 8rem);
         left: calc((20rem - 100vw)/ 2);
         top: calc((18.7rem - 100vh) + 8rem);
       }
@@ -149,10 +150,18 @@
       },
 
       rePosition: function() {
-        if (this.smallScreen && 700 > window.innerHeight) {
-          this.$.portrait.style.top = '28rem';
-        } else if (this.smallScreen && window.innerHeight > 700) {
-          this.$.portrait.style.top = 'calc(100vh - 18.7rem)';
+        if (this.smallScreen) {
+          if (700 > window.innerHeight) {
+            this.$.portrait.style.top = '28rem';
+          } else {
+            this.$.portrait.style.top = 'calc(100vh - 18.7rem)';
+          }
+        } else {
+          if (900 > window.innerHeight) {
+            this.$.portrait.style.top = '10rem';
+          } else {
+            this.$.portrait.style.top = 'auto';
+          }
         }
       },
 
