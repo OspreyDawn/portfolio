@@ -111,17 +111,30 @@
         }(this));
       },
 
-      changePage: function(event) {
-        var wDelta = event.wheelDeltaY / 120;
+      translateWheel: function(e) {
+        if (e.deltaMode == 0) {
+          return e
+        }
+
+        var newDelta = e.deltaY * 16;
+        var newWheel = new WheelEvent('newWheel', {'deltaY': newDelta,'deltaMode': 0});
+
+        return newWheel;
+      },
+
+      changePage: function(e) {
+        var ePrime = this.translateWheel(e)
+
+        var wDelta = ePrime.deltaY;
         var indexLength = this.selectedValues.length;
 
-        if ((wDelta < -2) && (this.selectedNum < indexLength - 1)) {
+        if ((16 < wDelta) && (this.selectedNum < indexLength - 1)) {
           if (this.selectedNum === 0) {
             this.$.portrait.downSlide();
           }
           this.selected = this.selectedValues[++this.selectedNum];
           this.unlisten(this, 'wheel', 'changePage');
-        } else if ((2 < wDelta) && (0 < this.selectedNum)) {
+        } else if ((wDelta < -16) && (0 < this.selectedNum)) {
           if (this.selectedNum === 1) {
             this.$.portrait.upSlide();
           }

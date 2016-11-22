@@ -31,11 +31,11 @@
         var path = this.$$('#portraitPath');
         var length = path.getTotalLength();
 
-        path.style.strokeDasharray = length + ' ' + length;
-        path.style.strokeDashoffset = -length;
+        path.style.strokeDasharray = length + 'px ' + length + 'px';
+        path.style.strokeDashoffset = -length + 'px';
 
         window.addEventListener('WebComponentsReady', function() {
-          path.style.strokeDashoffset = 0;
+          path.style.strokeDashoffset = '0px';
           path.style.fillOpacity = 1;
         });
       }
