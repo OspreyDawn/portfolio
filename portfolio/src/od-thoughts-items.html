@@ -14,7 +14,7 @@
         @apply(--layout-justified);
       }
       .container {
-        height: 60vh;
+        height: calc(100vh - 13.5rem);
         @apply(--layout-vertical);
         @apply(--layout-wrap);
       }
@@ -46,20 +46,25 @@
       .article {
         margin-bottom: 1rem;
         overflow: hidden;
-        background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+        -webkit-mask-image: -webkit-linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 60%, rgba(255, 255, 255, 0));
+      }
+      @-moz-document url-prefix() {
+        .article {
+          color: black;
+          background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
+          -webkit-text-fill-color: transparent;
+          -webkit-background-clip: text;
+        }
+      }
+      _:-ms-lang(x), _::-webkit-meter-bar, .article {
         color: black;
+        background: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0));
         -webkit-text-fill-color: transparent;
         -webkit-background-clip: text;
       }
-      @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-        /* IE10+ CSS styles go here */
-        .article {
-          background: rgba(255, 255, 255, 0);
-        }
-      }
       /* Mobile Screen Layout Styles */
       .container[mobile-layout] {
-        height: 65vh;
+        height: calc(100vh - 10.5rem);
       }
       .container[mobile-layout] .thoughtsItem {
         width: 100%;
@@ -73,7 +78,7 @@
         display: none;
       }
       #pageNav[mobile-layout] {
-        margin-bottom: 3.625rem;
+
       }
     </style>
 
@@ -192,7 +197,7 @@
       },
 
       ready: function() {
-        this.testArray = [1, 2, 3];
+        this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       },
 
       measureView: function() {
