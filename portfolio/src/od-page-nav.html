@@ -43,18 +43,22 @@
   </template>
 
   <script>
-    buttonStates = {
+    prevBtnStates = {
       SHOWPREV: 0,
-      SHOWNEXT: 1,
-      HIDEPREV: 2,
-      HIDENEXT: 3
+      HIDEPREV: 1
+    };
+
+    nextBtnStates = {
+      SHOWNEXT: 0,
+      HIDENEXT: 1
     };
 
     Polymer({
 
       is: 'od-page-nav',
 
-      currentState: buttonStates.SHOWNEXT,
+      prevCurrentState: prevBtnStates.HIDEPREV,
+      nextCurrentState: nextBtnStates.SHOWNEXT,
 
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
 
@@ -118,22 +122,22 @@
       },
 
       showPrevButton: function() {
-        this.currentState = buttonStates.SHOWPREV;
+        this.prevCurrentState = prevBtnStates.SHOWPREV;
         this.playAnimation('prev-entry');
       },
 
       showNextButton: function() {
-        this.currentState = buttonStates.SHOWNEXT;
+        this.nextCurrentState = nextBtnStates.SHOWNEXT;
         this.playAnimation('next-entry');
       },
 
       hidePrevButton: function() {
-        this.currentState = buttonStates.HIDEPREV;
+        this.prevCurrentState = prevBtnStates.HIDEPREV;
         this.playAnimation('prev-exit');
       },
 
       hideNextButton: function() {
-        this.currentState = buttonStates.HIDENEXT;
+        this.nextCurrentState = nextBtnStates.HIDENEXT;
         this.playAnimation('next-exit');
       },
 
@@ -146,24 +150,31 @@
       },
 
       _onNeonAnimationFinish: function() {
-        switch (this.currentState) {
-          case buttonStates.SHOWPREV:
+        switch (this.prevCurrentState) {
+          case prevBtnStates.SHOWPREV:
             this.$.prev.style.opacity = 1;
+            this.$.next.style.pointerEvents = 'auto';
             break;
-          case buttonStates.SHOWNEXT:
-            this.$.next.style.opacity = 1;
-            break;
-          case buttonStates.HIDEPREV:
+          case prevBtnStates.HIDEPREV:
             this.$.prev.style.opacity = 0;
+            this.$.next.style.pointerEvents = 'none';
             break;
-          case buttonStates.HIDENEXT:
+          default:
+            console.log('lolwut');
+        }
+        switch (this.nextCurrentState) {
+          case nextBtnStates.SHOWNEXT:
+            this.$.next.style.opacity = 1;
+            this.$.next.style.pointerEvents = 'auto';
+            break;
+          case nextBtnStates.HIDENEXT:
             this.$.next.style.opacity = 0;
+            this.$.next.style.pointerEvents = 'none';
             break;
           default:
             console.log('lolwut');
         }
       }
-
     });
   </script>
 </dom-module>
