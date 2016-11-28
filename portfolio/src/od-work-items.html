@@ -4,8 +4,9 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
 <link rel="import" href="od-page-nav.html">
+<link rel="import" href="touch-test-area.html">
 
-<dom-module id="od-work-items" attribute="query">
+<dom-module id="od-work-items" attribute="query on-display">
   <template>
 
     <style>
@@ -13,8 +14,11 @@
         display: block;
         @apply(--layout-vertical);
       }
-      .container {
+      touch-test-area {
         height: calc(100vh - 13.5rem);
+        background: salmon;
+      }
+      .container {
         @apply(--layout-vertical);
         @apply(--layout-wrap);
       }
@@ -70,19 +74,21 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
-    <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
-      <template is="dom-repeat" items="{{testArray}}">
-        <div class="workItem">
-          <div class="pjtImg">{{item}}</div>
-          <div class="pjtMeta">
-            <div class="pjtTitle">Project Name</div>
-            <div class="pjtSubtitle">Year | Type</div>
+    <touch-test-area view-size="{{viewSize}}" page-length="{{totalPages}}">
+      <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
+        <template is="dom-repeat" items="{{testArray}}">
+          <div class="workItem">
+            <div class="pjtImg">{{item}}</div>
+            <div class="pjtMeta">
+              <div class="pjtTitle">Project Name</div>
+              <div class="pjtSubtitle">Year | Type</div>
+            </div>
           </div>
-        </div>
-      </template>
-    </div>
-    <od-page-nav id="pageNav" on-prev-tap="prevTap" on-next-tap="nextTap" mobile-layout$="{{smallScreen}}"></od-page-nav>
+        </template>
+      </div>
+    </touch-test-area>
 
+    <od-page-nav id="pageNav" on-prev-tap="_prevTap" on-next-tap="_nextTap" mobile-layout$="{{smallScreen}}"></od-page-nav>
   </template>
 
   <script>
@@ -100,26 +106,6 @@
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
 
       properties: {
-        viewModifier: {
-          value: 0
-        },
-
-        pageSelect: {
-          value: 0
-        },
-
-        totalPages: {
-          value: 0
-        },
-
-        prevPosition: {
-          value: 0
-        },
-
-        nextPosition: {
-          value: 0
-        },
-
         animationConfig: {
           value: function() {
             return [];
@@ -127,84 +113,110 @@
         }
       },
 
+      viewSize: 0,
+      pageSelect: 0,
+      totalPages: 0,
+      prevPosition: 0,
+      nextPosition: 0,
+
       listeners: {
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
       ready: function() {
         this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+
+        window.addEventListener('resize', function(p) {
+          return function() {
+            p.calcGrid();
+          }
+        }(this));
+        window.addEventListener('page-changed', function(p) {
+          return function(e) {
+            if (e.detail.targetIndex === 1) {
+              p.calcGrid();
+            }
+          }
+        }(this));
       },
 
-      measureView: function() {
+      calcGrid: function() {
+        var view, pages = null;
         var containerW = this.$.itemContainer.offsetWidth;
-        var itemW = this.$$('.workItem').offsetWidth;
         var itemPad = this.smallScreen ? 24 : 64;
+        var itemW = this.$$('.workItem').offsetWidth + itemPad;
 
         if (this.smallScreen) {
-          this.viewModifier = containerW + itemPad;
-          this.totalPages = this.testArray.length;
+          view = containerW + itemPad;
+          pages = this.testArray.length;
         } else if (1240 > window.innerWidth){
-          this.viewModifier = (itemW + itemPad) * 2;
-          this.totalPages = Math.round(this.testArray.length / 6);
+          view = itemW * 2;
+          pages = Math.round(this.testArray.length / 6);
         } else {
-          this.viewModifier = (itemW + itemPad) * 3;
-          this.totalPages = Math.round(this.testArray.length / 9);
+          view = itemW * 3;
+          pages = Math.round(this.testArray.length / 9);
         }
+
+        this.viewSize = view;
+        this.totalPages = pages;
+
+        console.log(this.viewSize, this.totalPages);
       },
 
-      prevTap: function(event) {
-        this.currentState = pressedStates.PREVPRESS;
-
-        if (this.pageSelect === 1) {
-          this.$.pageNav.hidePrevButton();
-        }
-
-        if ((this.pageSelect + 1) === this.totalPages) {
-          this.$.pageNav.showNextButton();
-        }
-
-        if (0 < this.pageSelect) {
-          --this.pageSelect;
-
-          prevPosition = this.pageSelect * this.viewModifier;
-
-          this.animationConfig['prev'] = {
-            name: 'transform-animation',
-            node: this.$.itemContainer,
-            transformFrom: 'translateX(-' + (prevPosition + this.viewModifier) + 'px)',
-            transformTo: 'translateX(-' + prevPosition + 'px)'
-          };
-
-          this.playAnimation('prev');
-        }
-      },
-
-      nextTap: function(event) {
-        this.measureView();
-        this.currentState = pressedStates.NEXTPRESS;
-
-        if (this.pageSelect === 0) {
-          this.$.pageNav.showPrevButton();
-        }
-
+      animateTransition: function() {
         if ((this.pageSelect + 1) < (this.totalPages)) {
           ++this.pageSelect;
 
-          nextPosition = this.pageSelect * this.viewModifier;
+          nextPosition = this.pageSelect * this.viewSize;
 
-          this.animationConfig['next'] = {
+          this.animationConfig['transition'] = {
               name: 'transform-animation',
               node: this.$.itemContainer,
-              transformFrom: 'translateX(-' + (nextPosition - this.viewModifier) + 'px)',
+              transformFrom: 'translateX(-' + (nextPosition - this.viewSize) + 'px)',
               transformTo: 'translateX(-' + nextPosition + 'px)'
           };
+        } else if (0 < this.pageSelect) {
+          --this.pageSelect;
 
-          this.playAnimation('next');
+          prevPosition = this.pageSelect * this.viewSize;
+
+          this.animationConfig['transition'] = {
+            name: 'transform-animation',
+            node: this.$.itemContainer,
+            transformFrom: 'translateX(-' + (prevPosition + this.viewSize) + 'px)',
+            transformTo: 'translateX(-' + prevPosition + 'px)'
+          };
         }
 
-        if ((this.pageSelect + 1) >= (this.totalPages)) {
+          this.playAnimation('transition');
+      },
+
+      _prevTap: function() {
+        this.currentState = pressedStates.PREVPRESS;
+
+        if (this.pageSelect > 0) {
+          this.animateTransition();
+        }
+
+        if (this.pageSelect === 0) {
+          this.$.pageNav.hidePrevButton();
+        } else if (this.pageSelect === 1) {
+          this.$.pageNav.showPrevButton();
+        };
+      },
+
+      _nextTap: function() {
+        this.currentState = pressedStates.NEXTPRESS;
+
+        if (this.pageSelect < this.totalPages) {
+          this.animateTransition();
+        }
+
+        if (this.pageSelect === this.totalPages) {
           this.$.pageNav.hideNextButton();
-        }
+        } else if (this.pageSelect === (this.totalPages - 1)) {
+          this.$.pageNav.showNextButton();
+        };
       },
 
       _onNeonAnimationFinish: function() {

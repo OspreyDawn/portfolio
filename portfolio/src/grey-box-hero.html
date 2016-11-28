@@ -195,11 +195,11 @@
       },
 
       showWork: function() {
-        this.fire('show-work');
+        this.fire('show-work', {targetIndex: 1});
       },
 
       showThoughts: function() {
-        this.fire('show-thoughts');
+        this.fire('show-thoughts', {targetIndex: 2});
       },
 
       getAnimatable: function() {

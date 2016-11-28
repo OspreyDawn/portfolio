@@ -96,16 +96,16 @@
         return this.$$('#logo');
       },
 
-      showHero: function() {
-        this.fire('show-hero');
+      showHero: function(e) {
+        this.fire('show-hero', {targetIndex: 0});
       },
 
-      showWork: function() {
-        this.fire('show-work');
+      showWork: function(e) {
+        this.fire('show-work', {targetIndex: 1});
       },
 
-      showThoughts: function() {
-        this.fire('show-thoughts');
+      showThoughts: function(e) {
+        this.fire('show-thoughts', {targetIndex: 2});
       },
 
     });

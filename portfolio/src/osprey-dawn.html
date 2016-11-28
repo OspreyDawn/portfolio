@@ -79,21 +79,25 @@
         selected: {
           type: String
         },
-        selectedNum: {
+        indexSelector: {
           value: 0
         },
-        selectedValues: {
+        pageIndex: {
           type: Array
+        },
+        indexLength: {
+          value: 0
         }
       },
 
       listeners: {
-        'wheel' : 'changePage',
+        'wheel' : 'wheelFire',
         'to-about' : 'aboutPressed',
         'to-hero' : 'backPressed',
-        'show-hero' : 'toHero',
-        'show-work' : 'toWork',
-        'show-thoughts' : 'toThoughts'
+        'change-page' : 'pageDestiny',
+        'show-hero' : 'pageDestiny',
+        'show-work' : 'pageDestiny',
+        'show-thoughts' : 'pageDestiny'
       },
 
       ready: function() {
@@ -101,14 +105,28 @@
         for (var i = 0; i < this.$.pages.children.length; ++i) {
           readyArray.push(this.$.pages.children[i].id);
         };
-        this.selectedValues = readyArray;
-        this.selected = this.selectedValues[this.selectedNum];
+        this.pageIndex = readyArray;
+        this.indexLength = this.pageIndex.length;
+        this.selected = this.pageIndex[this.indexSelector];
 
         window.addEventListener('WebComponentsReady', function(p) {
           return function() {
             p.$.loadOverlay.style.display = 'none';
           }
         }(this));
+      },
+
+      pageDestiny: function(e) {
+        if (this.indexSelector === 0) {
+          this.$.portrait.downSlide();
+        }
+
+        if (e.detail.targetIndex === 0) {
+          this.$.portrait.upSlide();
+        }
+
+        this.indexSelector = e.detail.targetIndex;
+        this.selected = this.pageIndex[this.indexSelector];
       },
 
       translateWheel: function(e) {
@@ -122,47 +140,30 @@
         return newWheel;
       },
 
-      changePage: function(e) {
+      wheelFire: function(e) {
         var ePrime = this.translateWheel(e)
-
         var wDelta = ePrime.deltaY;
-        var indexLength = this.selectedValues.length;
+        var index = this.indexSelector;
 
-        if ((16 < wDelta) && (this.selectedNum < indexLength - 1)) {
-          if (this.selectedNum === 0) {
-            this.$.portrait.downSlide();
-          }
-          this.selected = this.selectedValues[++this.selectedNum];
-          this.unlisten(this, 'wheel', 'changePage');
-        } else if ((wDelta < -16) && (0 < this.selectedNum)) {
-          if (this.selectedNum === 1) {
-            this.$.portrait.upSlide();
-          }
-          this.selected = this.selectedValues[--this.selectedNum];
-          this.unlisten(this, 'wheel', 'changePage');
+        if (16 < wDelta && this.indexSelector < (this.indexLength - 1)) {
+          ++index
+        } else if (wDelta < -16 && this.indexSelector > 0) {
+          --index;
+        } else {
+          return
         };
-      },
 
-      toHero: function() {
-        this.selectedNum = 0;
-        this.selected = this.selectedValues[this.selectedNum];
-        this.$.portrait.upSlide();
-      },
-
-      toWork: function() {
-        if (this.selectedNum === 0) {
-          this.$.portrait.downSlide();
+        if (16 < wDelta || wDelta < -16) {
+          this.fire('change-page', {targetIndex: index});
+          this.unlisten(this, 'wheel', 'wheelFire');
+        } else {
+          return
         }
-        this.selectedNum = 1;
-        this.selected = this.selectedValues[this.selectedNum];
       },
 
-      toThoughts: function() {
-        if (this.selectedNum === 0) {
-          this.$.portrait.downSlide();
-        }
-        this.selectedNum = 2;
-        this.selected = this.selectedValues[this.selectedNum];
+      pageChanged: function() {
+        this.listen(this, 'wheel', 'wheelFire');
+        this.fire('page-changed', {targetIndex: this.indexSelector});
       },
 
       aboutPressed: function() {
@@ -173,12 +174,7 @@
       backPressed: function() {
         this.listen(this, 'wheel', 'changePage');
         this.$.portrait.heroSlide();
-      },
-
-      pageChanged: function() {
-        this.listen(this, 'wheel', 'changePage');
       }
-
     });
   </script>
 </dom-module>
