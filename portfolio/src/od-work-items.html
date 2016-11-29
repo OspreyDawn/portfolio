@@ -15,10 +15,8 @@
         @apply(--layout-vertical);
       }
       touch-test-area {
-        background: salmon;
       }
       .container {
-        background: cornflowerblue;
         height: calc(100vh - 13.5rem);
         @apply(--layout-vertical);
         @apply(--layout-wrap);
@@ -34,7 +32,7 @@
       }
       .workItem {
         width: 20rem;
-        height: 15rem;
+        height: 16rem;
         margin-right: 4rem;
         margin-bottom: 0.5rem;
         transition: opacity 0.3s;
@@ -165,10 +163,10 @@
 
         switch (direction) {
           case 'next':
-            engine.changePage(direction);
+            engine.execAnim(engine.$.container, direction, false);
             break;
           case 'prev':
-            engine.changePage(direction);
+            engine.execAnim(engine.$.container, direction, false);
             break;
           default:
             console.log('udunfuckdup');

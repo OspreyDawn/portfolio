@@ -41,8 +41,6 @@
       viewWidth: 0,
       xPos: 0,
       xRelease: 0,
-      xDeltaInit: 0,
-      xDelta: 0,
       indexSelector: 0,
       indexLength: 0,
 
@@ -62,55 +60,23 @@
         }
       },
 
-      keyGen: function(element, init, endPos) {
+      keyGen: function(element, init, endPos, dur) {
         this.animationConfig['translate'] = {
             name: 'transform-animation',
             node: element,
             transformFrom: 'translateX(' + init + 'px)',
             transformTo: 'translateX(' + endPos + 'px)',
             timing: {
-              duration: 150,
-              easing: 'ease-out'
+              duration: dur
             }
         }
 
         this.xEnd = endPos;
       },
 
-      changePage: function(direction) {
-        var indexInit = this.indexSelector;
-
-        switch (direction) {
-          case 'next':
-            ++this.indexSelector;
-            break;
-          case 'prev':
-            --this.indexSelector;
-            break;
-          default:
-            console.log('borked');
-        }
-
-        currentPosition = this.viewWidth * indexInit;
-        nextPosition = this.viewWidth * this.indexSelector;
-
-        this.animationConfig['translate'] = {
-          name: 'transform-animation',
-          node: this.$.container,
-          transformFrom: 'translateX(-' + currentPosition + 'px)',
-          transformTo: 'translateX(-' + nextPosition + 'px)'
-        }
-
-        this.xEnd = 0 - nextPosition;
-
-        this.playAnimation('translate');
-        this.fire('item-page-changed', {vector: direction, indexSelector: this.indexSelector});
-      },
-
-      coordGen: function(element, direction) {
-        var distance = this.viewWidth;
-
-        this.xInit = this.xRelease - (distance * this.indexSelector);
+      execAnim: function(element, direction, bool) {
+        indexInit = this.indexSelector;
+        distance = this.viewWidth;
 
         switch (direction) {
           case 'next':
@@ -123,9 +89,22 @@
             this.indexSelector;
           };
 
-        this.xEnd = -1 * distance * this.indexSelector;
+          if (bool) {
+            currentPosition = this.xRelease - (distance * indexInit);
+            duration = 150;
+          } else {
+            currentPosition = -1 * (distance * indexInit);
+            duration = 500;
+          }
 
-        this.keyGen(element, this.xInit, this.xEnd);
+          nextPosition = distance * this.indexSelector;
+
+        this.xEnd = -nextPosition
+
+        this.keyGen(element, currentPosition, -nextPosition, duration);
+
+        this.playAnimation('translate');
+        this.fire('item-page-changed', {vector: direction, indexSelector: this.indexSelector});
       },
 
       snapElement: function(element) {
@@ -139,10 +118,7 @@
 
         element.style.left = 'auto';
 
-        this.coordGen(element, direction);
-        this.playAnimation('translate');
-
-        this.fire('item-page-changed', {vector: direction, indexSelector: this.indexSelector});
+        this.execAnim(element, direction, true);
       },
 
       _onNeonAnimationFinish: function () {
