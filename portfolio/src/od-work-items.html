@@ -18,6 +18,7 @@
         background: salmon;
       }
       .container {
+        background: cornflowerblue;
         height: calc(100vh - 13.5rem);
         @apply(--layout-vertical);
         @apply(--layout-wrap);
@@ -74,7 +75,7 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
-    <touch-test-area view-width="{{viewWidth}}" page-length="{{indexLength}}">
+    <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="workItem">
@@ -120,11 +121,12 @@
       nextPosition: 0,
 
       listeners: {
+        'item-page-changed' : 'navVisibility',
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
       ready: function() {
-        this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+        this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
 
         window.addEventListener('resize', function(p) {
           return function() {
@@ -152,74 +154,65 @@
         gridW = Math.round(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
-        pages = Math.round(this.testArray.length / (gridW * gridH));
+        pages = Math.ceil(this.testArray.length / (gridW * gridH));
 
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
-
-        console.log(this.viewWidth, this.indexLength);
-
-        /* if (this.smallScreen) {
-          pages = this.testArray.length;
-        } */
       },
 
-      animateTransition: function() {
-        if ((this.indexSelector + 1) < (this.indexLength)) {
-          ++this.indexSelector;
+      translateView: function(direction) {
+        var engine = this.$.touchArea;
 
-          nextPosition = this.indexSelector * this.viewWidth;
-
-          this.animationConfig['transition'] = {
-              name: 'transform-animation',
-              node: this.$.itemContainer,
-              transformFrom: 'translateX(-' + (nextPosition - this.viewWidth) + 'px)',
-              transformTo: 'translateX(-' + nextPosition + 'px)'
-          };
-        } else if (0 < this.indexSelector) {
-          --this.indexSelector;
-
-          prevPosition = this.indexSelector * this.viewWidth;
-
-          this.animationConfig['transition'] = {
-            name: 'transform-animation',
-            node: this.$.itemContainer,
-            transformFrom: 'translateX(-' + (prevPosition + this.viewWidth) + 'px)',
-            transformTo: 'translateX(-' + prevPosition + 'px)'
-          };
+        switch (direction) {
+          case 'next':
+            engine.changePage(direction);
+            break;
+          case 'prev':
+            engine.changePage(direction);
+            break;
+          default:
+            console.log('udunfuckdup');
         }
-
-          this.playAnimation('transition');
       },
 
-      navVisibility: function() {
+      navVisibility: function(e) {
+        this.indexSelector = e.detail.indexSelector;
+
         if (this.indexSelector === 0) {
           this.$.pageNav.hidePrevButton();
-          this.$.pageNav.showNextButton();
-        } else if (this.indexSelector === 1) {
+        }
+
+        if (this.indexSelector === 1 && e.detail.vector === 'next') {
           this.$.pageNav.showPrevButton();
+        }
+
+        if (this.indexSelector === (this.indexLength - 2) && e.detail.vector === 'prev') {
+          this.$.pageNav.showNextButton();
+        }
+
+        if (this.indexSelector === (this.indexLength - 1)) {
           this.$.pageNav.hideNextButton();
-        };
+        }
       },
 
       _prevTap: function() {
         this.currentState = pressedStates.PREVPRESS;
 
         if (this.indexSelector > 0) {
-          this.animateTransition();
+          this.translateView('prev');
         }
 
-        this.navVisibility();
+        this.fire('item-page-changed', {vector: 'prev', indexSelector: this.indexSelector});
       },
 
       _nextTap: function() {
         this.currentState = pressedStates.NEXTPRESS;
 
         if (this.indexSelector < this.indexLength) {
-          this.animateTransition();
+          this.translateView('next');
         }
 
-        this.navVisibility();
+        this.fire('item-page-changed', {vector: 'next', indexSelector: this.indexSelector});
       },
 
       _onNeonAnimationFinish: function() {

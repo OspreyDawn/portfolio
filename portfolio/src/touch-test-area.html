@@ -12,7 +12,7 @@
       }
     </style>
 
-    <div class="container" id="testarea">
+    <div class="container" id="container">
       <content></content>
     </div>
 
@@ -34,7 +34,7 @@
       },
 
       listeners: {
-        'testarea.track' : 'handleTrack',
+        'container.track' : 'handleTrack',
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
@@ -43,8 +43,8 @@
       xRelease: 0,
       xDeltaInit: 0,
       xDelta: 0,
-      pageNum: 0,
-      pageLength: 0,
+      indexSelector: 0,
+      indexLength: 0,
 
       handleTrack: function(e) {
         switch(e.detail.state) {
@@ -56,61 +56,97 @@
             break;
           case 'end' :
             this.xRelease = e.detail.x - this.xPos;
-            this.animateSnap(e.currentTarget);
+            this.snapElement(e.currentTarget);
             this.xPos = 0;
             break;
         }
       },
 
-      xDeltaGen: function(direction) {
-        var distance = this.viewWidth;
-        this.xDeltaInit = this.xRelease + (-1 * distance * this.pageNum);
-
-        switch (direction) {
-          case 'next':
-            this.pageNum++
-            break;
-          case 'prev':
-            this.pageNum--;
-            break;
-          default:
-            this.pageNum;
-          };
-
-        this.xDelta = -1 * distance * this.pageNum;
-      },
-
-      keyGen: function(element, init, delta) {
+      keyGen: function(element, init, endPos) {
         this.animationConfig['translate'] = {
             name: 'transform-animation',
             node: element,
             transformFrom: 'translateX(' + init + 'px)',
-            transformTo: 'translateX(' + delta + 'px)',
+            transformTo: 'translateX(' + endPos + 'px)',
             timing: {
               duration: 150,
               easing: 'ease-out'
             }
         }
+
+        this.xEnd = endPos;
       },
 
-      animateSnap: function(element) {
-        var action = null;
+      changePage: function(direction) {
+        var indexInit = this.indexSelector;
 
-        if (this.xRelease < -400 && this.pageNum < (this.pageLength - 1)) {
-          action = 'next';
-        } else if (this.xRelease > 400 && this.pageNum > 0) {
-          action = 'prev';
+        switch (direction) {
+          case 'next':
+            ++this.indexSelector;
+            break;
+          case 'prev':
+            --this.indexSelector;
+            break;
+          default:
+            console.log('borked');
+        }
+
+        currentPosition = this.viewWidth * indexInit;
+        nextPosition = this.viewWidth * this.indexSelector;
+
+        this.animationConfig['translate'] = {
+          name: 'transform-animation',
+          node: this.$.container,
+          transformFrom: 'translateX(-' + currentPosition + 'px)',
+          transformTo: 'translateX(-' + nextPosition + 'px)'
+        }
+
+        this.xEnd = 0 - nextPosition;
+
+        this.playAnimation('translate');
+        this.fire('item-page-changed', {vector: direction, indexSelector: this.indexSelector});
+      },
+
+      coordGen: function(element, direction) {
+        var distance = this.viewWidth;
+
+        this.xInit = this.xRelease - (distance * this.indexSelector);
+
+        switch (direction) {
+          case 'next':
+            this.indexSelector++;
+            break;
+          case 'prev':
+            this.indexSelector--;
+            break;
+          default:
+            this.indexSelector;
+          };
+
+        this.xEnd = -1 * distance * this.indexSelector;
+
+        this.keyGen(element, this.xInit, this.xEnd);
+      },
+
+      snapElement: function(element) {
+        var direction = null;
+
+        if (this.xRelease < -400 && this.indexSelector < (this.indexLength - 1)) {
+          direction = 'next';
+        } else if (this.xRelease > 400 && this.indexSelector > 0) {
+          direction = 'prev';
         }
 
         element.style.left = 'auto';
 
-        this.xDeltaGen(action);
-        this.keyGen(element, this.xDeltaInit, this.xDelta);
+        this.coordGen(element, direction);
         this.playAnimation('translate');
+
+        this.fire('item-page-changed', {vector: direction, indexSelector: this.indexSelector});
       },
 
       _onNeonAnimationFinish: function () {
-        this.$$('.container').style.transform = 'translateX(' + this.xDelta + 'px)';
+        this.$$('.container').style.transform = 'translateX(' + this.xEnd + 'px)';
       }
     });
   </script>

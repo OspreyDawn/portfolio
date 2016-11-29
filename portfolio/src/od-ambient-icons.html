@@ -112,6 +112,13 @@
             }
           }
         }(this));
+
+        window.addEventListener('resize', function(p) {
+          return function () {
+            p.canvasWidth = p.$$('iron-icon').parentElement.offsetWidth;
+            p.canvasHeight = p.$$('iron-icon').parentElement.offsetHeight;
+          }
+        }(this));
       },
 
       createIcon: function(iconName) {
