@@ -15,10 +15,10 @@
         @apply(--layout-vertical);
       }
       touch-test-area {
-        height: calc(100vh - 13.5rem);
         background: salmon;
       }
       .container {
+        height: calc(100vh - 13.5rem);
         @apply(--layout-vertical);
         @apply(--layout-wrap);
       }
@@ -74,7 +74,7 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
-    <touch-test-area view-size="{{viewSize}}" page-length="{{totalPages}}">
+    <touch-test-area view-width="{{viewWidth}}" page-length="{{indexLength}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="workItem">
@@ -113,9 +113,9 @@
         }
       },
 
-      viewSize: 0,
-      pageSelect: 0,
-      totalPages: 0,
+      viewWidth: 0,
+      indexSelector: 0,
+      indexLength: 0,
       prevPosition: 0,
       nextPosition: 0,
 
@@ -128,62 +128,63 @@
 
         window.addEventListener('resize', function(p) {
           return function() {
-            p.calcGrid();
+            p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
           }
         }(this));
         window.addEventListener('page-changed', function(p) {
           return function(e) {
             if (e.detail.targetIndex === 1) {
-              p.calcGrid();
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
             }
           }
         }(this));
       },
 
-      calcGrid: function() {
-        var view, pages = null;
-        var containerW = this.$.itemContainer.offsetWidth;
-        var itemPad = this.smallScreen ? 24 : 64;
-        var itemW = this.$$('.workItem').offsetWidth + itemPad;
+      calcGrid: function(container, item) {
+        var gridW, gridH, pages = null,
+            containerW = container.offsetWidth,
+            containerH = container.offsetHeight,
+            itemMarginRight = parseInt(window.getComputedStyle(item).marginRight);
+            itemMarginBottom = parseInt(window.getComputedStyle(item).marginBottom);
+            itemW = item.offsetWidth + itemMarginRight,
+            itemH = item.offsetHeight + itemMarginBottom;
 
-        if (this.smallScreen) {
-          view = containerW + itemPad;
+        gridW = Math.round(containerW / itemW);
+        gridH = Math.floor(containerH / itemH);
+
+        pages = Math.round(this.testArray.length / (gridW * gridH));
+
+        this.viewWidth = itemW * gridW;
+        this.indexLength = pages;
+
+        console.log(this.viewWidth, this.indexLength);
+
+        /* if (this.smallScreen) {
           pages = this.testArray.length;
-        } else if (1240 > window.innerWidth){
-          view = itemW * 2;
-          pages = Math.round(this.testArray.length / 6);
-        } else {
-          view = itemW * 3;
-          pages = Math.round(this.testArray.length / 9);
-        }
-
-        this.viewSize = view;
-        this.totalPages = pages;
-
-        console.log(this.viewSize, this.totalPages);
+        } */
       },
 
       animateTransition: function() {
-        if ((this.pageSelect + 1) < (this.totalPages)) {
-          ++this.pageSelect;
+        if ((this.indexSelector + 1) < (this.indexLength)) {
+          ++this.indexSelector;
 
-          nextPosition = this.pageSelect * this.viewSize;
+          nextPosition = this.indexSelector * this.viewWidth;
 
           this.animationConfig['transition'] = {
               name: 'transform-animation',
               node: this.$.itemContainer,
-              transformFrom: 'translateX(-' + (nextPosition - this.viewSize) + 'px)',
+              transformFrom: 'translateX(-' + (nextPosition - this.viewWidth) + 'px)',
               transformTo: 'translateX(-' + nextPosition + 'px)'
           };
-        } else if (0 < this.pageSelect) {
-          --this.pageSelect;
+        } else if (0 < this.indexSelector) {
+          --this.indexSelector;
 
-          prevPosition = this.pageSelect * this.viewSize;
+          prevPosition = this.indexSelector * this.viewWidth;
 
           this.animationConfig['transition'] = {
             name: 'transform-animation',
             node: this.$.itemContainer,
-            transformFrom: 'translateX(-' + (prevPosition + this.viewSize) + 'px)',
+            transformFrom: 'translateX(-' + (prevPosition + this.viewWidth) + 'px)',
             transformTo: 'translateX(-' + prevPosition + 'px)'
           };
         }
@@ -191,32 +192,34 @@
           this.playAnimation('transition');
       },
 
+      navVisibility: function() {
+        if (this.indexSelector === 0) {
+          this.$.pageNav.hidePrevButton();
+          this.$.pageNav.showNextButton();
+        } else if (this.indexSelector === 1) {
+          this.$.pageNav.showPrevButton();
+          this.$.pageNav.hideNextButton();
+        };
+      },
+
       _prevTap: function() {
         this.currentState = pressedStates.PREVPRESS;
 
-        if (this.pageSelect > 0) {
+        if (this.indexSelector > 0) {
           this.animateTransition();
         }
 
-        if (this.pageSelect === 0) {
-          this.$.pageNav.hidePrevButton();
-        } else if (this.pageSelect === 1) {
-          this.$.pageNav.showPrevButton();
-        };
+        this.navVisibility();
       },
 
       _nextTap: function() {
         this.currentState = pressedStates.NEXTPRESS;
 
-        if (this.pageSelect < this.totalPages) {
+        if (this.indexSelector < this.indexLength) {
           this.animateTransition();
         }
 
-        if (this.pageSelect === this.totalPages) {
-          this.$.pageNav.hideNextButton();
-        } else if (this.pageSelect === (this.totalPages - 1)) {
-          this.$.pageNav.showNextButton();
-        };
+        this.navVisibility();
       },
 
       _onNeonAnimationFinish: function() {

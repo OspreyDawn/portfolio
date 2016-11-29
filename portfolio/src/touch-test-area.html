@@ -9,8 +9,6 @@
         width: 100%;
         height: 100%;
         position: relative;
-        @apply(--layout-vertical);
-        @apply(--layout-wrap);
       }
     </style>
 
@@ -40,7 +38,7 @@
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
-      viewSize: 0,
+      viewWidth: 0,
       xPos: 0,
       xRelease: 0,
       xDeltaInit: 0,
@@ -65,7 +63,7 @@
       },
 
       xDeltaGen: function(direction) {
-        var distance = this.viewSize;
+        var distance = this.viewWidth;
         this.xDeltaInit = this.xRelease + (-1 * distance * this.pageNum);
 
         switch (direction) {
