@@ -15,18 +15,30 @@
         left: calc(50% - 20px);
         opacity: 0;
       }
+      .mask {
+        display: block;
+        position: absolute;
+        z-index: 1;
+        width: 20rem;
+        height: 20rem;
+        border-radius: 10rem;
+        background: white;
+        top: calc(50% - 10rem);
+        left: calc(50% - 10rem);
+      }
     </style>
+
+    <div class="mask"></div>
   </template>
 
   <script>
-    calcAnim = function(element, initial, canvasX, canvasY) {
+    calcAnim = function(element, canvasX, canvasY) {
       var xEnd, yEnd;
       var animKey = [];
       var animTime;
       var mainAxis = Math.random() < 0.5 ? true : false;
-      var durationLength = 24000
+      var durationLength = 48000
       var timingDuration = Math.random() * durationLength;
-      var timingDelay = initial ? (Math.random() * 2500) + 2500 + 300 : 0;
 
       var pathDirection = function() {
         if (Math.random() < 0.5) {
@@ -58,13 +70,12 @@
 
       animTime = {
           duration: timingDuration,
-          delay: timingDelay
         };
 
       var definedAnim = element.animate(animKey, animTime);
 
       definedAnim.onfinish = function() {
-        calcAnim(element, false, canvasX, canvasY);
+        calcAnim(element, canvasX, canvasY);
       }
     }
 
@@ -108,7 +119,7 @@
             p.canvasHeight = p.$$('iron-icon').parentElement.offsetHeight;
 
             for(i = 0; i < p.iconsToAnimate.length; i++) {
-              calcAnim(p.iconsToAnimate[i], true, p.canvasWidth, p.canvasHeight);
+              calcAnim(p.iconsToAnimate[i], p.canvasWidth, p.canvasHeight);
             }
           }
         }(this));

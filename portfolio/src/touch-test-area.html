@@ -9,11 +9,21 @@
         width: 100%;
         height: 100%;
         position: relative;
+        @apply(--layout-vertical);
+      }
+      #touchArea {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: -1;
+        @apply(--layout-vertical);
+        @apply(--layout-wrap);
       }
     </style>
 
     <div class="container" id="container">
       <content></content>
+      <div id="touchArea"></div>
     </div>
 
   </template>
@@ -35,14 +45,42 @@
 
       listeners: {
         'container.track' : 'handleTrack',
+        'made-grid' : 'pageGen',
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
       viewWidth: 0,
+      threshold: 0,
       xPos: 0,
       xRelease: 0,
       indexSelector: 0,
       indexLength: 0,
+
+      ready: function() {
+        window.addEventListener('made-grid', function(p) {
+          return function(e) {
+            p.pageGen(p.$.touchArea, e);
+          }
+        }(this));
+      },
+
+      pageGen: function(parent, e) {
+        while (parent.firstChild) {
+          parent.removeChild(parent.firstChild);
+        }
+
+        this.viewWidth = e.detail.width;
+        this.indexLength = e.detail.length;
+
+        for(i = 0; i < this.indexLength; i++) {
+          var page = document.createElement('div');
+
+          page.style.width = this.viewWidth + 'px';
+          page.style.height = '100%';
+
+          parent.appendChild(page);
+        }
+      },
 
       handleTrack: function(e) {
         switch(e.detail.state) {
@@ -110,9 +148,9 @@
       snapElement: function(element) {
         var direction = null;
 
-        if (this.xRelease < -400 && this.indexSelector < (this.indexLength - 1)) {
+        if (this.xRelease < -this.threshold && this.indexSelector < (this.indexLength - 1)) {
           direction = 'next';
-        } else if (this.xRelease > 400 && this.indexSelector > 0) {
+        } else if (this.xRelease > this.threshold && this.indexSelector > 0) {
           direction = 'prev';
         }
 

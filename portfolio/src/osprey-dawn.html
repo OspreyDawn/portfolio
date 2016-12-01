@@ -167,12 +167,12 @@
       },
 
       aboutPressed: function() {
-        this.unlisten(this, 'wheel', 'changePage');
+        this.unlisten(this, 'wheel', 'wheelFire');
         this.$.portrait.aboutSlide();
       },
 
       backPressed: function() {
-        this.listen(this, 'wheel', 'changePage');
+        this.listen(this, 'wheel', 'wheelFire');
         this.$.portrait.heroSlide();
       }
     });

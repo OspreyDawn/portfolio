@@ -73,7 +73,7 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
-    <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}">
+    <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="workItem">
@@ -113,6 +113,7 @@
       },
 
       viewWidth: 0,
+      threshold: 0,
       indexSelector: 0,
       indexLength: 0,
       prevPosition: 0,
@@ -154,8 +155,16 @@
 
         pages = Math.ceil(this.testArray.length / (gridW * gridH));
 
+        if (this.smallScreen) {
+          this.threshold = 200;
+        } else {
+          this.threshold = 400;
+        }
+
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
+
+        this.fire('made-grid', {width: this.viewWidth, length: this.indexLength});
       },
 
       translateView: function(direction) {
@@ -174,9 +183,10 @@
       },
 
       navVisibility: function(e) {
+        indexInit = this.indexSelector;
         this.indexSelector = e.detail.indexSelector;
 
-        if (this.indexSelector === 0) {
+        if (this.indexSelector === 0 && indexInit > 0) {
           this.$.pageNav.hidePrevButton();
         }
 
@@ -188,7 +198,7 @@
           this.$.pageNav.showNextButton();
         }
 
-        if (this.indexSelector === (this.indexLength - 1)) {
+        if (this.indexSelector === (this.indexLength - 1) && indexInit === (this.indexLength - 2)) {
           this.$.pageNav.hideNextButton();
         }
       },
