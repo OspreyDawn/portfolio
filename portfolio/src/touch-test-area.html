@@ -11,19 +11,10 @@
         position: relative;
         @apply(--layout-vertical);
       }
-      #touchArea {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        z-index: -1;
-        @apply(--layout-vertical);
-        @apply(--layout-wrap);
-      }
     </style>
 
     <div class="container" id="container">
       <content></content>
-      <div id="touchArea"></div>
     </div>
 
   </template>
@@ -45,10 +36,10 @@
 
       listeners: {
         'container.track' : 'handleTrack',
-        'made-grid' : 'pageGen',
         'neon-animation-finish' : '_onNeonAnimationFinish'
       },
 
+      content: null,
       viewWidth: 0,
       threshold: 0,
       xPos: 0,
@@ -59,28 +50,17 @@
       ready: function() {
         window.addEventListener('made-grid', function(p) {
           return function(e) {
-            p.pageGen(p.$.touchArea, e);
+            p.content = e.detail.content;
+            console.log(p.content);
           }
         }(this));
       },
 
-      pageGen: function(parent, e) {
-        while (parent.firstChild) {
-          parent.removeChild(parent.firstChild);
-        }
+      /* trackAreaGen: function(element, e) {
 
         this.viewWidth = e.detail.width;
         this.indexLength = e.detail.length;
-
-        for(i = 0; i < this.indexLength; i++) {
-          var page = document.createElement('div');
-
-          page.style.width = this.viewWidth + 'px';
-          page.style.height = '100%';
-
-          parent.appendChild(page);
-        }
-      },
+      }, */
 
       handleTrack: function(e) {
         switch(e.detail.state) {
@@ -88,11 +68,11 @@
             this.xPos = e.detail.x;
             break;
           case 'track' :
-            e.currentTarget.style.left = (e.detail.x - this.xPos) + 'px';
+            this.content.style.left = (e.detail.x - this.xPos) + 'px';
             break;
           case 'end' :
             this.xRelease = e.detail.x - this.xPos;
-            this.snapElement(e.currentTarget);
+            this.snapElement(this.content);
             this.xPos = 0;
             break;
         }
@@ -112,7 +92,7 @@
         this.xEnd = endPos;
       },
 
-      execAnim: function(element, direction, bool) {
+      execAnim: function(element, direction, touch) {
         indexInit = this.indexSelector;
         distance = this.viewWidth;
 
@@ -127,7 +107,7 @@
             this.indexSelector;
           };
 
-          if (bool) {
+          if (touch) {
             currentPosition = this.xRelease - (distance * indexInit);
             duration = 150;
           } else {
@@ -160,7 +140,7 @@
       },
 
       _onNeonAnimationFinish: function () {
-        this.$$('.container').style.transform = 'translateX(' + this.xEnd + 'px)';
+        this.content.style.transform = 'translateX(' + this.xEnd + 'px)';
       }
     });
   </script>

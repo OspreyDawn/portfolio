@@ -18,6 +18,7 @@
       }
       .container {
         height: calc(100vh - 13.5rem);
+        position: relative;
         @apply(--layout-vertical);
         @apply(--layout-wrap);
       }
@@ -164,7 +165,7 @@
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
 
-        this.fire('made-grid', {width: this.viewWidth, length: this.indexLength});
+        this.fire('made-grid', {width: this.viewWidth, length: this.indexLength, content: container});
       },
 
       translateView: function(direction) {
@@ -172,10 +173,10 @@
 
         switch (direction) {
           case 'next':
-            engine.execAnim(engine.$.container, direction, false);
+            engine.execAnim(engine.content, direction, false);
             break;
           case 'prev':
-            engine.execAnim(engine.$.container, direction, false);
+            engine.execAnim(engine.content, direction, false);
             break;
           default:
             console.log('udunfuckdup');
