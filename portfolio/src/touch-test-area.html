@@ -51,16 +51,9 @@
         window.addEventListener('made-grid', function(p) {
           return function(e) {
             p.content = e.detail.content;
-            console.log(p.content);
           }
         }(this));
       },
-
-      /* trackAreaGen: function(element, e) {
-
-        this.viewWidth = e.detail.width;
-        this.indexLength = e.detail.length;
-      }, */
 
       handleTrack: function(e) {
         switch(e.detail.state) {

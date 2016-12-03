@@ -14,8 +14,6 @@
         display: block;
         @apply(--layout-vertical);
       }
-      touch-test-area {
-      }
       .container {
         height: calc(100vh - 13.5rem);
         position: relative;
@@ -64,8 +62,14 @@
       .container[mobile-layout] .pjtImg {
         @apply(--layout-flex);
       }
-      #pageNav[mobile-layout] {
-
+      .container[mobile-layout]:hover > div > .pjtMeta {
+        opacity: inherit;
+      }
+      .container[mobile-layout]:hover > div:hover > .pjtMeta {
+        opacity: inherit;
+      }
+      .container[mobile-layout]:hover > div:hover > .pjtImg {
+        box-shadow: none;
       }
     </style>
 
@@ -77,7 +81,7 @@
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
-          <div class="workItem">
+          <div class="workItem" on-tap="clickTest">
             <div class="pjtImg">{{item}}</div>
             <div class="pjtMeta">
               <div class="pjtTitle">Project Name</div>
@@ -140,6 +144,10 @@
             }
           }
         }(this));
+      },
+
+      clickTest: function() {
+        console.log('working');
       },
 
       calcGrid: function(container, item) {
@@ -222,19 +230,6 @@
         }
 
         this.fire('item-page-changed', {vector: 'next', indexSelector: this.indexSelector});
-      },
-
-      _onNeonAnimationFinish: function() {
-        switch (this.currentState) {
-          case pressedStates.PREVPRESS:
-            this.$.itemContainer.style.transform = 'translateX(-' + prevPosition + 'px)';
-            break;
-          case pressedStates.NEXTPRESS:
-            this.$.itemContainer.style.transform = 'translateX(-' + nextPosition + 'px)';
-            break;
-          default:
-            console.log('uwotm8');
-        }
       }
     });
   </script>
