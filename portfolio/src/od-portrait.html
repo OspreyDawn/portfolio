@@ -165,6 +165,12 @@
             p.rePosition();
           }
         }(this));
+
+        window.addEventListener('hero-index-change', function(p) {
+          return function(e) {
+            p.slidePortrait(e);
+          }
+        }(this));
       },
 
       rePosition: function() {
@@ -180,6 +186,14 @@
           } else {
             this.$.portrait.style.top = 'auto';
           }
+        }
+      },
+
+      slidePortrait: function(e) {
+        if (e.detail.targetIndex === 1) {
+          this.aboutSlide();
+        } else if (e.detail.targetIndex === 0) {
+          this.heroSlide();
         }
       },
 

@@ -7,6 +7,7 @@
 <link rel="import" href="hero-pager.html">
 <link rel="import" href="grey-box-work.html">
 <link rel="import" href="grey-box-thoughts.html">
+<link rel="import" href="od-page-maker.html">
 
 <dom-module id="osprey-dawn">
   <template>
@@ -50,7 +51,7 @@
       id="pages"
       attr-for-selected="id"
       selected="{{selected}}"
-      on-neon-animation-finish="pageChanged">
+      on-neon-animation-finish="indexChanged">
 
       <hero-pager id="hero" query="{{mediaQuery}}"></hero-pager>
       <grey-box-work id="work" query="{{mediaQuery}}"></grey-box-work>
@@ -79,35 +80,38 @@
         selected: {
           type: String
         },
+        siteIndex: {
+          type: Array,
+          value: []
+        },
         indexSelector: {
           value: 0
         },
-        pageIndex: {
-          type: Array
-        },
         indexLength: {
           value: 0
+        },
+        itemPages: {
+          type: Array,
+          value: []
         }
       },
 
       listeners: {
         'wheel' : 'wheelFire',
-        'to-about' : 'aboutPressed',
+        'wheel-state' : 'wheelState',
+        'create-page' : 'createPage',
+        'delete-page' : 'deletePage',
         'to-hero' : 'backPressed',
-        'change-page' : 'pageDestiny',
-        'show-hero' : 'pageDestiny',
-        'show-work' : 'pageDestiny',
-        'show-thoughts' : 'pageDestiny'
+        'change-site-index' : 'indexDestiny',
       },
 
       ready: function() {
-        var readyArray = [];
         for (var i = 0; i < this.$.pages.children.length; ++i) {
-          readyArray.push(this.$.pages.children[i].id);
+          this.siteIndex.push(this.$.pages.children[i].id);
         };
-        this.pageIndex = readyArray;
-        this.indexLength = this.pageIndex.length;
-        this.selected = this.pageIndex[this.indexSelector];
+
+        this.indexLength = this.siteIndex.length;
+        this.selected = this.siteIndex[this.indexSelector];
 
         window.addEventListener('WebComponentsReady', function(p) {
           return function() {
@@ -116,7 +120,7 @@
         }(this));
       },
 
-      pageDestiny: function(e) {
+      indexDestiny: function(e) {
         if (this.indexSelector === 0) {
           this.$.portrait.downSlide();
         }
@@ -126,7 +130,7 @@
         }
 
         this.indexSelector = e.detail.targetIndex;
-        this.selected = this.pageIndex[this.indexSelector];
+        this.selected = this.siteIndex[this.indexSelector];
       },
 
       translateWheel: function(e) {
@@ -154,26 +158,41 @@
         };
 
         if (16 < wDelta || wDelta < -16) {
-          this.fire('change-page', {targetIndex: index});
+          this.fire('change-site-index', {targetIndex: index});
           this.unlisten(this, 'wheel', 'wheelFire');
         } else {
           return
         }
       },
 
-      pageChanged: function() {
+      indexChanged: function() {
         this.listen(this, 'wheel', 'wheelFire');
         this.fire('page-changed', {targetIndex: this.indexSelector});
       },
 
-      aboutPressed: function() {
-        this.unlisten(this, 'wheel', 'wheelFire');
-        this.$.portrait.aboutSlide();
+      createPage: function() {
+        newPage = document.createElement('od-page-maker');
+        newPage.style.zIndex = 2;
+        newPage.setAttribute('id', 'itemPage');
+        this.appendChild(newPage);
+        this.itemPages.push(newPage);
+        this.fire('call-page', {pageCall: 'enter'});
+        this.fire('wheel-state', {active: false});
       },
 
-      backPressed: function() {
-        this.listen(this, 'wheel', 'wheelFire');
-        this.$.portrait.heroSlide();
+      deletePage: function() {
+        length = this.itemPages.length - 1;
+        page = this.itemPages[length];
+        this.removeChild(page);
+        this.fire('wheel-state', {active: true});
+      },
+
+      wheelState: function(e) {
+        if (e.detail.active) {
+          this.listen(this, 'wheel', 'wheelFire');
+        } else {
+          this.unlisten(this, 'wheel', 'wheelFire');
+        }
       }
     });
   </script>

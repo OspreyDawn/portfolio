@@ -191,15 +191,16 @@
       },
 
       showAbout: function() {
-        this.fire('to-about');
+        this.fire('hero-index-change', {targetIndex: 1});
+        this.fire('wheel-state', {active: false});
       },
 
       showWork: function() {
-        this.fire('show-work', {targetIndex: 1});
+        this.fire('change-site-index', {targetIndex: 1});
       },
 
       showThoughts: function() {
-        this.fire('show-thoughts', {targetIndex: 2});
+        this.fire('change-site-index', {targetIndex: 2});
       },
 
       getAnimatable: function() {

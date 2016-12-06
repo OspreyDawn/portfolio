@@ -1,7 +1,5 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
 <link rel="import" href="od-page-nav.html">
 <link rel="import" href="touch-test-area.html">
@@ -86,7 +84,7 @@
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
-          <div class="workItem" on-tap="clickTest">
+          <div class="workItem" on-tap="pageGen">
             <div class="pjtImg">{{item}}</div>
             <div class="pjtMeta">
               <div class="pjtTitle">Project Name</div>
@@ -112,8 +110,6 @@
 
       currentState: pressedStates.PREVPRESS,
 
-      behaviors: [Polymer.NeonAnimationRunnerBehavior],
-
       properties: {
         animationConfig: {
           value: function() {
@@ -130,8 +126,7 @@
       nextPosition: 0,
 
       listeners: {
-        'item-page-changed' : 'navVisibility',
-        'neon-animation-finish' : '_onNeonAnimationFinish'
+        'item-page-changed' : 'navVisibility'
       },
 
       ready: function() {
@@ -151,8 +146,8 @@
         }(this));
       },
 
-      clickTest: function() {
-        console.log('working');
+      pageGen: function() {
+        this.fire('create-page');
       },
 
       calcGrid: function(container, item) {

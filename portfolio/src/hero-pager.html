@@ -86,15 +86,11 @@
       },
 
       listeners: {
-        'to-about' : 'next',
-        'to-hero' : 'back'
+        'hero-index-change' : 'heroDestiny',
       },
 
-      next: function(){
-        this.selected = 1;
-      },
-      back: function(){
-        this.selected = 0;
+      heroDestiny: function(e) {
+        this.selected = e.detail.targetIndex;
       }
 
     });

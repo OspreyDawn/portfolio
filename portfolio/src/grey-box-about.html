@@ -223,7 +223,8 @@
       },
 
       showHero: function() {
-        this.fire('to-hero');
+        this.fire('hero-index-change', {targetIndex: 0});
+        this.fire('wheel-state', {active: true});
       }
 
     });

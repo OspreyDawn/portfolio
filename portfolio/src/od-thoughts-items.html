@@ -1,7 +1,5 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
 <link rel="import" href="od-page-nav.html">
 <link rel="import" href="touch-test-area.html">
@@ -168,8 +166,6 @@
 
       currentState: pressedStates.NEXTPRESS,
 
-      behaviors: [Polymer.NeonAnimationRunnerBehavior],
-
       properties: {
         animationConfig: {
           value: function() {
@@ -186,8 +182,7 @@
       nextPosition: 0,
 
       listeners: {
-        'item-page-changed' : 'navVisibility',
-        'neon-animation-finish' : '_onNeonAnimationFinish'
+        'item-page-changed' : 'navVisibility'
       },
 
       ready: function() {
