@@ -2,6 +2,8 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
+<link rel="import" href="od-article-generator.html">
+
 <dom-module id="od-page-maker">
   <template>
     <style>
@@ -11,18 +13,20 @@
         position: absolute;
       }
       .container {
-        max-width: 77.5rem;
+        max-width: 44rem;
         padding: 0 1.5rem;
         margin: 0 auto;
         padding-top: 2rem;
-        @apply(--layout-horizontal);
+        @apply(--layout-vertical);
       }
       .button {
         display: inline-block;
+        position: fixed;
         padding: 1rem;
         border: 1px solid lightgrey;
         border-radius: 5px;
         cursor: pointer;
+        @apply(--layout-self-start);
       }
       .button:hover {
         color: white;
@@ -41,14 +45,22 @@
         position: absolute;
         background: white;
         opacity: 0;
-        box-shadow: 0 0 3rem rgba(0, 0, 0, 0.14);
+        overflow: scroll;
+      }
+      #article {
+        margin:  4rem 0 10rem 0;
       }
     </style>
 
     <div id="overlay"></div>
+
     <div id="page">
       <div class="container">
         <div class="button" id="exitBtn" on-tap="closePage">&#8592;</div>
+        <div id="article">
+          <od-article-generator></od-article-generator>
+          <a href="#" on-tap="pageGen">Make a new Page.</a>
+        </div>
       </div>
     </div>
   </template>
@@ -85,6 +97,10 @@
             p.pageAnim(e);
           }
         }(this));
+      },
+
+      pageGen: function() {
+        this.fire('create-page');
       },
 
       closePage: function() {

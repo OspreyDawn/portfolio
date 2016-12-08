@@ -38,6 +38,7 @@
         margin-right: 4rem;
         margin-bottom: 0.5rem;
         transition: opacity 0.3s;
+        cursor: pointer;
         @apply(--layout-vertical);
       }
       .pjtMeta {
@@ -137,7 +138,7 @@
             p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
           }
         }(this));
-        window.addEventListener('page-changed', function(p) {
+        window.addEventListener('page-loaded', function(p) {
           return function(e) {
             if (e.detail.targetIndex === 1) {
               p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));

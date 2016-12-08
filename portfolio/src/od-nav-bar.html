@@ -50,13 +50,15 @@
 
     <div id="navBar" class="container" mobile-layout$="{{smallScreen}}">
       <template is="dom-if" if="{{!smallScreen}}">
-        <div id="logo" on-tap="showHero"></div>
+        <a href="#/Home">
+          <div id="logo" on-tap="showHero"></div>
+        </a>
         <div id="mainNavItems">
           <div id="title">MAX O'BRIEN</div>
           <div id="heroLinks">
-            <a href="#" class="heroLink" on-tap="showWork">WORK</a>
+            <a href="#/Work" class="heroLink">WORK</a>
             <div id="divider">|</div>
-            <a href="#" class="heroLink" on-tap="showThoughts">THOUGHTS</a>
+            <a href="#/Thoughts" class="heroLink">THOUGHTS</a>
           </div>
         </div>
         <span class="flex"></span>
@@ -97,17 +99,8 @@
       },
 
       showHero: function(e) {
-        this.fire('change-site-index', {targetIndex: 0});
+        window.location = '#/Home';
       },
-
-      showWork: function(e) {
-        this.fire('change-site-index', {targetIndex: 1});
-      },
-
-      showThoughts: function(e) {
-        this.fire('change-site-index', {targetIndex: 2});
-      },
-
     });
   </script>
 </dom-module>

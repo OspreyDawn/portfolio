@@ -1,3 +1,4 @@
+<link rel="import" href="../bower_components/app-elements/app-elements.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
@@ -45,19 +46,33 @@
       }
     </style>
 
-    <od-portrait id="portrait" query="{{mediaQuery}}"></od-portrait>
+    <app-location
+        route="{{route}}"
+        use-hash-as-path>
+    </app-location>
+
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{pageData}}">
+    </app-route>
+
+    <od-portrait
+      id="portrait"
+      query="{{mediaQuery}}">
+    </od-portrait>
 
     <neon-animated-pages
       id="pages"
       attr-for-selected="id"
       selected="{{selected}}"
-      on-neon-animation-finish="indexChanged">
+      on-neon-animation-finish="neonPageLoaded">
 
       <hero-pager id="hero" query="{{mediaQuery}}"></hero-pager>
       <grey-box-work id="work" query="{{mediaQuery}}"></grey-box-work>
       <grey-box-thoughts id="thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
-
     </neon-animated-pages>
+
     <div id="orientOverlay"><p>Please rotate to Portrait to view this website</p></div>
     <div id="loadOverlay"></div>
 
@@ -73,6 +88,10 @@
           type: String,
           value: 'osprey-dawn',
         },
+        route : {
+          type: Object,
+          observer: 'handleRoute'
+        },
         mediaQuery: {
           type: String,
           value: 'max-width: 450px'
@@ -85,6 +104,10 @@
           value: []
         },
         indexSelector: {
+          value: 0,
+          observer: 'indexChanged'
+        },
+        indexPrevious: {
           value: 0
         },
         indexLength: {
@@ -101,8 +124,7 @@
         'wheel-state' : 'wheelState',
         'create-page' : 'createPage',
         'delete-page' : 'deletePage',
-        'to-hero' : 'backPressed',
-        'change-site-index' : 'indexDestiny',
+        'change-site-index' : 'indexDestiny'
       },
 
       ready: function() {
@@ -121,20 +143,21 @@
       },
 
       indexDestiny: function(e) {
-        if (this.indexSelector === 0) {
-          this.$.portrait.downSlide();
-        }
-
-        if (e.detail.targetIndex === 0) {
-          this.$.portrait.upSlide();
-        }
+        this.indexPrevious = this.indexSelector;
 
         this.indexSelector = e.detail.targetIndex;
         this.selected = this.siteIndex[this.indexSelector];
       },
 
+      indexChanged: function() {
+        this.fire('site-index-changed', {
+          indexTarget: this.indexSelector,
+          prevTarget: this.indexPrevious
+        });
+      },
+
       translateWheel: function(e) {
-        if (e.deltaMode == 0) {
+        if (e.deltaMode === 0) {
           return e
         }
 
@@ -165,17 +188,12 @@
         }
       },
 
-      indexChanged: function() {
-        this.listen(this, 'wheel', 'wheelFire');
-        this.fire('page-changed', {targetIndex: this.indexSelector});
-      },
-
       createPage: function() {
         newPage = document.createElement('od-page-maker');
-        newPage.style.zIndex = 2;
         newPage.setAttribute('id', 'itemPage');
         this.appendChild(newPage);
         this.itemPages.push(newPage);
+        newPage.style.zIndex = this.itemPages.length + 1;
         this.fire('call-page', {pageCall: 'enter'});
         this.fire('wheel-state', {active: false});
       },
@@ -192,6 +210,50 @@
           this.listen(this, 'wheel', 'wheelFire');
         } else {
           this.unlisten(this, 'wheel', 'wheelFire');
+        }
+      },
+
+      neonPageLoaded: function() {
+        this.listen(this, 'wheel', 'wheelFire');
+        this.fire('page-loaded', {targetIndex: this.indexSelector});
+      },
+
+      handleRoute: function() {
+        console.log(this.pageData);
+
+        if (this.pageData) {
+          switch (this.pageData.page) {
+            case 'About':
+              this.fire('hero-index-changed', {indexTarget: 1});
+
+              if (this.indexSelector > 0) {
+                setTimeout(function(p) {
+                  return function() {
+                    p.indexSelector = 0;
+                  }
+                }(this), 1000);
+              } else {
+                this.indexSelector = 0;
+              }
+              break;
+            case 'Home':
+              if (this.indexSelector === 0) {
+                this.fire('hero-index-changed', {indexTarget: 0});
+              }
+              this.indexSelector = 0;
+              break;
+            case 'Work':
+              this.indexSelector = 1;
+              break;
+            case 'Thoughts':
+              this.indexSelector = 2;
+              break;
+            default:
+              console.log('wtfm8');
+              return
+            }
+
+          this.selected = this.siteIndex[this.indexSelector];
         }
       }
     });

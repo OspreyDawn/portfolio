@@ -117,7 +117,7 @@
     </iron-media-query>
 
     <div class="container" mobile-layout$="{{smallScreen}}">
-      <div id="backButton" class="button" on-tap="showHero">&#8592;</div>
+      <div id="backBtn" class="button" on-tap="showHero">&#8592;</div>
       <span class="flex"></span>
       <div id="aboutContainer" class="aboutContainer">
         <div id="aboutDetail">
@@ -189,7 +189,7 @@
           value: function() {
             var neonElements = this.$.aboutContainer.children;
             var neonArray = Array.prototype.slice.call(neonElements);
-            neonArray.push(this.$.backButton);
+            neonArray.push(this.$.backBtn);
 
             return {
               'entry': [{
@@ -223,7 +223,7 @@
       },
 
       showHero: function() {
-        this.fire('hero-index-change', {targetIndex: 0});
+        window.location = '#/Home';
         this.fire('wheel-state', {active: true});
       }
 

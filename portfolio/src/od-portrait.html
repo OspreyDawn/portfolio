@@ -110,9 +110,10 @@
 
   <script>
     pageStates = {
-      HERO: 0,
-      ABOUT: 1,
-      BODY: 2
+      RIGHT: 0,
+      LEFT: 1,
+      UP: 2,
+      DOWN: 3
     };
 
     Polymer({
@@ -132,23 +133,7 @@
 
         animationConfig: {
           value: function() {
-            return {
-              'down-slide': {
-                name: 'transform-animation',
-                node: this.$.portrait,
-                transformTo: 'translateY(80%)'
-              },
-
-              'up-slide': {
-                name: 'transform-animation',
-                node: this.$.portrait,
-                transformFrom: 'translateY(80%)',
-                transformTo: 'translateY(0)',
-                timing: {
-                  delay: 100
-                }
-              }
-            }
+            return [];
           }
         }
       },
@@ -166,9 +151,15 @@
           }
         }(this));
 
-        window.addEventListener('hero-index-change', function(p) {
+        window.addEventListener('hero-index-changed', function(p) {
           return function(e) {
-            p.slidePortrait(e);
+            p.slidePortraitX(e);
+          }
+        }(this));
+
+        window.addEventListener('site-index-changed', function(p) {
+          return function(e) {
+            p.slidePortraitY(e);
           }
         }(this));
       },
@@ -189,16 +180,25 @@
         }
       },
 
-      slidePortrait: function(e) {
-        if (e.detail.targetIndex === 1) {
+      slidePortraitX: function(e) {
+        if (e.detail.indexTarget === 1) {
           this.aboutSlide();
-        } else if (e.detail.targetIndex === 0) {
+        } else if (e.detail.indexTarget === 0) {
           this.heroSlide();
         }
       },
 
+      slidePortraitY: function(e) {
+        if (e.detail.prevTarget === 0) {
+          this.downSlide();
+        }
+        if (e.detail.indexTarget === 0) {
+          this.upSlide();
+        }
+      },
+
       aboutSlide: function() {
-        this.currentState = pageStates.ABOUT;
+        this.currentState = pageStates.LEFT;
         if (this.smallScreen) {
           this.animationConfig['about-slide'] = {
             name: 'transform-animation',
@@ -223,7 +223,7 @@
       },
 
       heroSlide: function() {
-        this.currentState = pageStates.HERO;
+        this.currentState = pageStates.RIGHT;
         if (this.smallScreen) {
           this.animationConfig['hero-slide'] = {
             name: 'transform-animation',
@@ -250,32 +250,57 @@
       },
 
       downSlide: function() {
-        this.currentState = pageStates.BODY;
+        this.currentState = pageStates.DOWN;
+
+        this.animationConfig['down-slide'] = {
+          name: 'transform-animation',
+          node: this,
+          transformTo: 'translateY(50%)'
+        }
+
         this.playAnimation('down-slide');
       },
 
       upSlide: function() {
-        this.currentState = pageStates.HERO;
+        this.currentState = pageStates.UP;
+
+        this.animationConfig['up-slide'] = {
+          name: 'transform-animation',
+          node: this,
+          transformFrom: 'translateY(50%)',
+          transformTo: 'translateY(0)',
+          timing: {
+            delay: 100
+          }
+        }
+
         this.playAnimation('up-slide');
       },
 
       _onNeonAnimationFinish: function() {
         switch (this.currentState) {
-          case pageStates.HERO:
+          case pageStates.RIGHT:
             this.$.portrait.style.transform = 'none';
-            this.style.overflow = 'hidden';
             break;
-          case pageStates.ABOUT:
+          case pageStates.LEFT:
             if (this.smallScreen) {
               this.$.portrait.style.transform = 'translateY(175%)';
             } else {
               this.$.portrait.style.transform = 'translateX(-83.5%)';
             }
-            this.style.overflow = 'visible';
             break;
-          case pageStates.BODY:
-            this.$.portrait.style.transform = 'translateY(80%)';
+          case pageStates.UP:
+            this.style.transform = 'none';
             break;
+          case pageStates.DOWN:
+            this.style.transform = 'translateY(50%)';
+            break;
+        }
+
+        if (this.currentState === LEFT) {
+          this.style.overflow = 'visible';
+        } else {
+          this.style.overflow = 'hidden';
         }
       }
 

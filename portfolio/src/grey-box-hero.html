@@ -99,7 +99,7 @@
         <div id="sub-title">OSPREY DAWN IS</div>
         <div id="title">MAX O'BRIEN</div>
         <div id="hero-links">
-          <a href="#" class="heroLink" on-tap="showWork">WORK</a><div id="divider">|</div><a href="#" class="heroLink" on-tap="showThoughts">THOUGHTS</a>
+          <a href="#/Work" class="heroLink">WORK</a><div id="divider">|</div><a href="#/Thoughts" class="heroLink">THOUGHTS</a>
         </div>
         <div id="hero-text">
           A User Interface and User Experience Designer with experience in Game Design, User Research, and Product Design.
@@ -191,16 +191,8 @@
       },
 
       showAbout: function() {
-        this.fire('hero-index-change', {targetIndex: 1});
+        window.location = '#/About';
         this.fire('wheel-state', {active: false});
-      },
-
-      showWork: function() {
-        this.fire('change-site-index', {targetIndex: 1});
-      },
-
-      showThoughts: function() {
-        this.fire('change-site-index', {targetIndex: 2});
       },
 
       getAnimatable: function() {

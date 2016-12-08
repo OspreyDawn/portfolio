@@ -193,7 +193,7 @@
             p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));
           }
         }(this));
-        window.addEventListener('page-changed', function(p) {
+        window.addEventListener('page-loaded', function(p) {
           return function(e) {
             if (e.detail.targetIndex === 2) {
               p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));

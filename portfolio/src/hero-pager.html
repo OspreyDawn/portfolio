@@ -85,12 +85,16 @@
         }
       },
 
-      listeners: {
-        'hero-index-change' : 'heroDestiny',
+      ready: function() {
+        window.addEventListener('hero-index-changed', function(p) {
+          return function(e) {
+            p.heroDestiny(e);
+          }
+        }(this));
       },
 
       heroDestiny: function(e) {
-        this.selected = e.detail.targetIndex;
+        this.selected = e.detail.indexTarget;
       }
 
     });
