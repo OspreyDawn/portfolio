@@ -1,0 +1,174 @@
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+
+<link rel="import" href="item-page.html">
+
+<dom-module id="item-page-manager">
+  <template>
+    <style>
+      :host {
+        display: none;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+      #overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background: rgba(0, 0, 0, 0.28);
+        opacity: 0;
+      }
+    </style>
+
+    <div id="overlay"></div>
+
+    <!-- <item-page></item-page> -->
+
+  </template>
+
+  <script>
+    pageState = {
+      OUTVIEW: 0,
+      INVIEW: 1
+    };
+
+    Polymer({
+
+      is: 'item-page-manager',
+
+      currentState: pageState.OUTVIEW,
+
+      behaviors: [Polymer.NeonAnimationRunnerBehavior],
+
+      properties: {
+        animationConfig: {
+            value: function() {
+              return {
+                'overlay-fade-in': {
+                  name: 'fade-in-animation',
+                  node: this.$.overlay
+                },
+                'overlay-fade-out': {
+                  name: 'fade-out-animation',
+                  node: this.$.overlay,
+                  timing: {
+                    delay: 250
+                  }
+                }
+              }
+          }
+        },
+
+        currentPage: {
+          value: null
+        },
+
+        currentOverlay: {
+          value: null
+        },
+
+        pageArray: {
+          type: Array,
+          value: []
+        },
+      },
+
+      listeners: {
+        'neon-animation-finish' : '_onNeonAnimationFinish'
+      },
+
+      ready: function() {
+        window.addEventListener('open-page', function(p) {
+          return function() {
+            p.style.display = 'block';
+            p.initPage();
+          }
+        }(this));
+
+        window.addEventListener('close-page', function(p) {
+          return function() {
+            p.deletePage();
+          }
+        }(this));
+      },
+
+      initPage: function() {
+        this.createPage();
+        this.initOverlay();
+
+        this.playAnimation('overlay-fade-in');
+        this.pageEnterAnim(this.currentPage);
+      },
+
+      initOverlay: function() {
+        this.currentState = pageState.INVIEW;
+        this.$.overlay.style.zIndex = 3 + this.pageArray.length;
+      },
+
+      createPage: function() {
+        var newPage = document.createElement('item-page');
+
+        this.appendChild(newPage);
+
+        newPage.setAttribute('id', 'item');
+        newPage.style.display = 'none';
+        newPage.style.zIndex = 4 + this.pageArray.length;
+
+        this.pageArray.push(newPage);
+
+        this.currentPage = newPage;
+      },
+
+      deletePage: function() {
+        console.log(this.currentPage);
+        this.currentState = pageState.OUTVIEW;
+        this.pageExitAnim(this.currentPage);
+      },
+
+      pageEnterAnim: function(element) {
+        element.style.display = 'block';
+
+        this.animationConfig['page-enter'] = {
+          name: 'slide-from-right-animation',
+          node: element,
+          timing: {
+            delay: 250
+          }
+        };
+
+        this.playAnimation('page-enter');
+      },
+
+      pageExitAnim: function(element) {
+        this.animationConfig['page-exit'] = {
+          name: 'slide-right-animation',
+          node: element
+        };
+
+        this.playAnimation('page-exit');
+      },
+
+      _onNeonAnimationFinish: function() {
+        switch (this.currentState) {
+          case pageState.OUTVIEW:
+            this.pageArray.splice(-1, 1);
+            this.removeChild(this.currentPage);
+
+            if (this.pageArray.length > 0) {
+              this.$.overlay.style.zIndex = this.$.overlay.style.zIndex = 3 + this.pageArray.length;
+            } else {
+              this.$.overlay.style.opacity = 0;
+              this.style.display = 'none';
+            }
+            break;
+          case pageState.INVIEW:
+            this.$.overlay.style.opacity = 1;
+            break;
+          default:
+            console.log('wellshit');
+        }
+      }
+    });
+  </script>
+</dom-module>

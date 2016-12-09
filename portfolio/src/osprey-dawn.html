@@ -8,12 +8,15 @@
 <link rel="import" href="hero-pager.html">
 <link rel="import" href="grey-box-work.html">
 <link rel="import" href="grey-box-thoughts.html">
-<link rel="import" href="od-page-maker.html">
+<link rel="import" href="item-page-manager.html">
 
 <dom-module id="osprey-dawn">
   <template>
 
     <style>
+      item-page-manager {
+        z-index: 2;
+      }
       :host {
         @apply(--layout-fullbleed);
         overflow: hidden;
@@ -73,6 +76,8 @@
       <grey-box-thoughts id="Thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
     </neon-animated-pages>
 
+    <item-page-manager></item-page-manager>
+
     <div id="orientOverlay"><p>Please rotate to Portrait to view this website</p></div>
     <div id="loadOverlay"></div>
 
@@ -117,16 +122,10 @@
         indexLength: {
           value: 0
         },
-        itemPages: {
-          type: Array,
-          value: []
-        }
       },
 
       listeners: {
         'wheel' : 'wheelFire',
-        'create-page' : 'createPage',
-        'delete-page' : 'deletePage',
       },
 
       ready: function() {
@@ -182,23 +181,6 @@
         } else {
           return
         }
-      },
-
-      createPage: function() {
-        newPage = document.createElement('od-page-maker');
-        newPage.setAttribute('id', 'itemPage');
-        this.appendChild(newPage);
-        this.itemPages.push(newPage);
-        newPage.style.zIndex = this.itemPages.length + 1;
-        this.fire('call-page', {pageCall: 'enter'});
-        this.fire('wheel-state', {active: false});
-      },
-
-      deletePage: function() {
-        length = this.itemPages.length - 1;
-        page = this.itemPages[length];
-        this.removeChild(page);
-        this.fire('wheel-state', {active: true});
       },
 
       neonPageLoaded: function() {

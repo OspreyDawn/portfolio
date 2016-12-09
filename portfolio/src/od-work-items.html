@@ -85,7 +85,7 @@
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
-          <div class="workItem" on-tap="pageGen">
+          <div class="workItem" on-tap="openPage">
             <div class="pjtImg">{{item}}</div>
             <div class="pjtMeta">
               <div class="pjtTitle">Project Name</div>
@@ -147,8 +147,8 @@
         }(this));
       },
 
-      pageGen: function() {
-        this.fire('create-page');
+      openPage: function() {
+        this.fire('open-page');
       },
 
       calcGrid: function(container, item) {
