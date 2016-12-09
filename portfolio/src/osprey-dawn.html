@@ -68,9 +68,9 @@
       selected="{{selected}}"
       on-neon-animation-finish="neonPageLoaded">
 
-      <hero-pager id="hero" query="{{mediaQuery}}"></hero-pager>
-      <grey-box-work id="work" query="{{mediaQuery}}"></grey-box-work>
-      <grey-box-thoughts id="thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
+      <hero-pager id="Home" query="{{mediaQuery}}"></hero-pager>
+      <grey-box-work id="Work" query="{{mediaQuery}}"></grey-box-work>
+      <grey-box-thoughts id="Thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
     </neon-animated-pages>
 
     <div id="orientOverlay"><p>Please rotate to Portrait to view this website</p></div>
@@ -88,13 +88,16 @@
           type: String,
           value: 'osprey-dawn',
         },
-        route : {
+        route: {
           type: Object,
           observer: 'handleRoute'
         },
         mediaQuery: {
           type: String,
           value: 'max-width: 450px'
+        },
+        heroState: {
+          type: Boolean
         },
         selected: {
           type: String
@@ -124,7 +127,6 @@
         'wheel-state' : 'wheelState',
         'create-page' : 'createPage',
         'delete-page' : 'deletePage',
-        'change-site-index' : 'indexDestiny'
       },
 
       ready: function() {
@@ -140,13 +142,6 @@
             p.$.loadOverlay.style.display = 'none';
           }
         }(this));
-      },
-
-      indexDestiny: function(e) {
-        this.indexPrevious = this.indexSelector;
-
-        this.indexSelector = e.detail.targetIndex;
-        this.selected = this.siteIndex[this.indexSelector];
       },
 
       indexChanged: function() {
@@ -170,18 +165,19 @@
       wheelFire: function(e) {
         var ePrime = this.translateWheel(e)
         var wDelta = ePrime.deltaY;
-        var index = this.indexSelector;
+
+        this.indexPrevious = this.indexSelector;
 
         if (16 < wDelta && this.indexSelector < (this.indexLength - 1)) {
-          ++index
+          ++this.indexSelector;
         } else if (wDelta < -16 && this.indexSelector > 0) {
-          --index;
+          --this.indexSelector;
         } else {
           return
         };
 
         if (16 < wDelta || wDelta < -16) {
-          this.fire('change-site-index', {targetIndex: index});
+          window.location = '#/' + this.siteIndex[this.indexSelector];
           this.unlisten(this, 'wheel', 'wheelFire');
         } else {
           return
@@ -219,27 +215,16 @@
       },
 
       handleRoute: function() {
-        console.log(this.pageData);
+        this.indexPrevious = this.indexSelector;
 
         if (this.pageData) {
           switch (this.pageData.page) {
             case 'About':
+              this.heroState = false;
               this.fire('hero-index-changed', {indexTarget: 1});
-
-              if (this.indexSelector > 0) {
-                setTimeout(function(p) {
-                  return function() {
-                    p.indexSelector = 0;
-                  }
-                }(this), 1000);
-              } else {
-                this.indexSelector = 0;
-              }
+              this.indexSelector = 0;
               break;
             case 'Home':
-              if (this.indexSelector === 0) {
-                this.fire('hero-index-changed', {indexTarget: 0});
-              }
               this.indexSelector = 0;
               break;
             case 'Work':
@@ -251,6 +236,11 @@
             default:
               console.log('wtfm8');
               return
+            }
+
+            if (!this.heroState && this.pageData.page != 'About') {
+              this.fire('hero-index-changed', {indexTarget: 0});
+              this.heroState = true;
             }
 
           this.selected = this.siteIndex[this.indexSelector];

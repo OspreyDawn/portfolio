@@ -98,7 +98,7 @@
       query-matches="{{narrowScreen}}">
     </iron-media-query>
 
-    <div class="container" mobile-layout$="{{smallScreen}}" tablet-layout$="{{narrowScreen}}">
+    <div id="container" class="container" mobile-layout$="{{smallScreen}}" tablet-layout$="{{narrowScreen}}">
       <div class="flex"></div>
       <div id="portrait">
         <od-ambient-icons><div class="mask"></div></od-ambient-icons>
@@ -109,16 +109,21 @@
   </template>
 
   <script>
-    pageStates = {
+    xStates = {
       RIGHT: 0,
-      LEFT: 1,
-      UP: 2,
-      DOWN: 3
+      LEFT: 1
+    };
+
+    yStates = {
+      UP: 0,
+      DOWN: 1
     };
 
     Polymer({
 
-      currentState: pageStates.HERO,
+      currentXState: xStates.RIGHT,
+
+      currentYState: yStates.UP,
 
       is: 'od-portrait',
 
@@ -186,6 +191,7 @@
         } else if (e.detail.indexTarget === 0) {
           this.heroSlide();
         }
+        return
       },
 
       slidePortraitY: function(e) {
@@ -198,7 +204,7 @@
       },
 
       aboutSlide: function() {
-        this.currentState = pageStates.LEFT;
+        this.currentXState = xStates.LEFT;
         if (this.smallScreen) {
           this.animationConfig['about-slide'] = {
             name: 'transform-animation',
@@ -223,7 +229,7 @@
       },
 
       heroSlide: function() {
-        this.currentState = pageStates.RIGHT;
+        this.currentXState = xStates.RIGHT;
         if (this.smallScreen) {
           this.animationConfig['hero-slide'] = {
             name: 'transform-animation',
@@ -250,24 +256,24 @@
       },
 
       downSlide: function() {
-        this.currentState = pageStates.DOWN;
+        this.currentYState = yStates.DOWN;
 
         this.animationConfig['down-slide'] = {
           name: 'transform-animation',
-          node: this,
-          transformTo: 'translateY(50%)'
+          node: this.$.container,
+          transformTo: 'translateY(70%)'
         }
 
         this.playAnimation('down-slide');
       },
 
       upSlide: function() {
-        this.currentState = pageStates.UP;
+        this.currentYState = yStates.UP;
 
         this.animationConfig['up-slide'] = {
           name: 'transform-animation',
-          node: this,
-          transformFrom: 'translateY(50%)',
+          node: this.$.container,
+          transformFrom: 'translateY(70%)',
           transformTo: 'translateY(0)',
           timing: {
             delay: 100
@@ -278,29 +284,32 @@
       },
 
       _onNeonAnimationFinish: function() {
-        switch (this.currentState) {
-          case pageStates.RIGHT:
+        if (this.currentXState === xStates.LEFT) {
+          this.$.container.overflow = 'visible';
+        } else {
+          this.$.container.overflow = 'hidden';
+        }
+
+        switch (this.currentXState) {
+          case xStates.RIGHT:
             this.$.portrait.style.transform = 'none';
             break;
-          case pageStates.LEFT:
+          case xStates.LEFT:
             if (this.smallScreen) {
               this.$.portrait.style.transform = 'translateY(175%)';
             } else {
               this.$.portrait.style.transform = 'translateX(-83.5%)';
             }
             break;
-          case pageStates.UP:
-            this.style.transform = 'none';
-            break;
-          case pageStates.DOWN:
-            this.style.transform = 'translateY(50%)';
-            break;
         }
 
-        if (this.currentState === LEFT) {
-          this.style.overflow = 'visible';
-        } else {
-          this.style.overflow = 'hidden';
+        switch (this.currentYState) {
+          case yStates.UP:
+            this.$.container.style.transform = 'none';
+            break;
+          case yStates.DOWN:
+            this.$.container.style.transform = 'translateY(70%)';
+            break;
         }
       }
 
