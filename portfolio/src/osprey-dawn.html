@@ -124,7 +124,6 @@
 
       listeners: {
         'wheel' : 'wheelFire',
-        'wheel-state' : 'wheelState',
         'create-page' : 'createPage',
         'delete-page' : 'deletePage',
       },
@@ -201,14 +200,6 @@
         this.fire('wheel-state', {active: true});
       },
 
-      wheelState: function(e) {
-        if (e.detail.active) {
-          this.listen(this, 'wheel', 'wheelFire');
-        } else {
-          this.unlisten(this, 'wheel', 'wheelFire');
-        }
-      },
-
       neonPageLoaded: function() {
         this.listen(this, 'wheel', 'wheelFire');
         this.fire('page-loaded', {targetIndex: this.indexSelector});
@@ -221,6 +212,8 @@
           switch (this.pageData.page) {
             case 'About':
               this.heroState = false;
+              this.unlisten(this, 'wheel', 'wheelFire');
+
               this.fire('hero-index-changed', {indexTarget: 1});
               this.indexSelector = 0;
               break;
@@ -239,8 +232,10 @@
             }
 
             if (!this.heroState && this.pageData.page != 'About') {
-              this.fire('hero-index-changed', {indexTarget: 0});
               this.heroState = true;
+              this.listen(this, 'wheel', 'wheelFire');
+
+              this.fire('hero-index-changed', {indexTarget: 0});
             }
 
           this.selected = this.siteIndex[this.indexSelector];

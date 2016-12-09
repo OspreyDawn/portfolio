@@ -285,9 +285,9 @@
 
       _onNeonAnimationFinish: function() {
         if (this.currentXState === xStates.LEFT) {
-          this.$.container.overflow = 'visible';
+          this.style.overflow = 'visible';
         } else {
-          this.$.container.overflow = 'hidden';
+          this.style.overflow = 'hidden';
         }
 
         switch (this.currentXState) {
