@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
-<dom-module id="od-page-nav" attributes="query special-button-text">
+<dom-module id="od-page-nav" attributes="query special-button-text special-button-link">
   <template>
 
     <style>
@@ -37,7 +37,7 @@
     </iron-media-query>
 
     <div id="prev" class="button">&#8592;</div>
-    <div id="special" class="button" mobile-layout$="{{smallScreen}}">[[special-button-text]]</div>
+    <div id="special" class="button" mobile-layout$="{{smallScreen}}" on-tap="openPage">[[special-button-text]]</div>
     <div id="next" class="button">&#8594;</div>
 
   </template>
@@ -110,6 +110,10 @@
 
       ready: function() {
         this.$.prev.style.opacity = 0;
+      },
+
+      openPage: function() {
+        this.fire('open-page');
       },
 
       _onTap: function(event) {

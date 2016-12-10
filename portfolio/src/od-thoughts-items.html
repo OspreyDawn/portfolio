@@ -139,7 +139,7 @@
 
             </div>
             <div class="artFoot">
-              <div class="button">Continue Reading</div>
+              <div class="button" on-tap="openPage">Continue Reading</div>
             </div>
           </div>
         </template>
@@ -151,6 +151,7 @@
       on-next-tap="_nextTap"
       query="{{query}}"
       special-button-text="Continue Reading"
+      special-button-link="openPage"
       mobile-layout$="{{smallScreen}}">
     </od-page-nav>
   </template>
@@ -200,6 +201,10 @@
             }
           }
         }(this));
+      },
+
+      openPage: function() {
+        this.fire('open-page');
       },
 
       calcGrid: function(container, item) {

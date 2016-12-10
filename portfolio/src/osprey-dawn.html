@@ -126,6 +126,7 @@
 
       listeners: {
         'wheel' : 'wheelFire',
+        'wheel-state' : 'wheelState'
       },
 
       ready: function() {
@@ -180,6 +181,14 @@
           this.unlisten(this, 'wheel', 'wheelFire');
         } else {
           return
+        }
+      },
+
+      wheelState: function(e) {
+        if (!e.detail.active) {
+          this.unlisten(this, 'wheel', 'wheelFire');
+        } else {
+          this.listen(this, 'wheel', 'wheelFire');
         }
       },
 

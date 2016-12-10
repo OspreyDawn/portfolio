@@ -60,6 +60,11 @@
           }
         },
 
+        deleteAction: {
+          type: Boolean,
+          value: false
+        },
+
         currentPage: {
           value: null
         },
@@ -94,6 +99,10 @@
       },
 
       initPage: function() {
+        if (this.pageArray.length === 0) {
+          this.fire('wheel-state', {active: false});
+        }
+
         this.createPage();
         this.initOverlay();
 
@@ -111,7 +120,7 @@
 
         this.appendChild(newPage);
 
-        newPage.setAttribute('id', 'item');
+        newPage.setAttribute('id', 'item' + this.pageArray.length);
         newPage.style.display = 'none';
         newPage.style.zIndex = 4 + this.pageArray.length;
 
@@ -121,9 +130,10 @@
       },
 
       deletePage: function() {
-        console.log(this.currentPage);
         this.currentState = pageState.OUTVIEW;
+        this.deleteAction = true;
         this.pageExitAnim(this.currentPage);
+        this.playAnimation('overlay-fade-out');
       },
 
       pageEnterAnim: function(element) {
@@ -152,14 +162,20 @@
       _onNeonAnimationFinish: function() {
         switch (this.currentState) {
           case pageState.OUTVIEW:
-            this.pageArray.splice(-1, 1);
-            this.removeChild(this.currentPage);
+            if (this.deleteAction) {
+              this.removeChild(this.currentPage);
+              this.pageArray.splice(-1, 1);
+              this.currentPage = this.pageArray[this.pageArray.length - 1];
+
+              this.deleteAction = false;
+            }
 
             if (this.pageArray.length > 0) {
               this.$.overlay.style.zIndex = this.$.overlay.style.zIndex = 3 + this.pageArray.length;
             } else {
               this.$.overlay.style.opacity = 0;
               this.style.display = 'none';
+              this.fire('wheel-state', {active: true});
             }
             break;
           case pageState.INVIEW:
