@@ -23,13 +23,13 @@
         -ms-user-select: none;
         user-select: none;
       }
-      .container:hover > div > .pjtMeta {
+      .container:hover > div > a > .pjtMeta {
         opacity: 0.28;
       }
-      .container:hover > div:hover > .pjtMeta {
+      .container:hover > div:hover > a > .pjtMeta {
         opacity: 1;
       }
-      .container:hover > div:hover > .pjtImg {
+      .container:hover > div:hover > a > .pjtImg {
         box-shadow: 0 3px 14px rgba(0, 0, 0, 0.21);
       }
       .workItem {
@@ -38,7 +38,12 @@
         margin-right: 4rem;
         margin-bottom: 0.5rem;
         transition: opacity 0.3s;
-        cursor: pointer;
+      }
+      .workItem  a {
+        display: block;
+        width: 100%;
+        color: inherit;
+        text-decoration: none;
         @apply(--layout-vertical);
       }
       .pjtMeta {
@@ -63,6 +68,10 @@
         height: inherit;
         margin-right: 1.5rem;
       }
+      .container[mobile-layout] .workItem a {
+        width: 100%;
+        height: 100%;
+      }
       .container[mobile-layout] .pjtImg {
         @apply(--layout-flex);
       }
@@ -85,12 +94,14 @@
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
-          <div class="workItem" on-tap="openPage">
-            <div class="pjtImg">{{item}}</div>
-            <div class="pjtMeta">
-              <div class="pjtTitle">Project Name</div>
-              <div class="pjtSubtitle">Year | Type</div>
-            </div>
+          <div class="workItem">
+            <a href="#/Work/work_item1">
+              <div class="pjtImg">{{item}}</div>
+              <div class="pjtMeta">
+                <div class="pjtTitle">Project Name</div>
+                <div class="pjtSubtitle">Year | Type</div>
+              </div>
+            </a>
           </div>
         </template>
       </div>
@@ -155,10 +166,6 @@
           }
         }(this));
 
-      },
-
-      openPage: function() {
-        window.location = '#/Work/work_item1'
       },
 
       calcGrid: function(container, item) {

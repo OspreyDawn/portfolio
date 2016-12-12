@@ -34,6 +34,13 @@
         color: white;
         background: lightgrey;
       }
+      .button a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        color: inherit;
+        text-decoration: none;
+      }
       .thoughtsItem {
         width: 32rem;
         margin-right: 4rem;
@@ -139,7 +146,7 @@
 
             </div>
             <div class="artFoot">
-              <div class="button" on-tap="openPage">Continue Reading</div>
+              <div class="button"><a href="#/Thoughts/work_item1">Continue Reading</a></div>
             </div>
           </div>
         </template>
@@ -210,10 +217,6 @@
             }
           }
         }(this));
-      },
-
-      openPage: function() {
-        this.fire('open-page');
       },
 
       calcGrid: function(container, item) {

@@ -126,13 +126,6 @@
       },
 
       ready: function() {
-        /* window.addEventListener('open-page', function(p) {
-          return function() {
-            p.style.display = 'block';
-            p.initPage();
-          }
-        }(this)); */
-
         window.addEventListener('close-page', function(p) {
           return function() {
             p.deletePage();
