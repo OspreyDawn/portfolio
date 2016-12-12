@@ -223,12 +223,12 @@
               return
             }
 
-            if (!this.heroState && this.pageData.page != 'About') {
-              this.heroState = true;
-              this.listen(this, 'wheel', 'wheelFire');
+          if (!this.heroState && this.pageData.page != 'About') {
+            this.heroState = true;
+            this.listen(this, 'wheel', 'wheelFire');
 
-              this.fire('hero-index-changed', {indexTarget: 0});
-            }
+            this.fire('hero-index-changed', {indexTarget: 0});
+          }
 
           this.selected = this.siteIndex[this.indexSelector];
         }

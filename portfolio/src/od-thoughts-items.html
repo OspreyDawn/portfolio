@@ -194,6 +194,15 @@
             p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));
           }
         }(this));
+
+        window.addEventListener('WebComponentsReady', function(p) {
+          return function() {
+            if (window.location.hash === '#/Thoughts') {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
+          }
+        }(this));
+
         window.addEventListener('page-loaded', function(p) {
           return function(e) {
             if (e.detail.targetIndex === 2) {

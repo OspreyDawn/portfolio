@@ -4,7 +4,7 @@
 <link rel="import" href="od-page-nav.html">
 <link rel="import" href="touch-test-area.html">
 
-<dom-module id="od-work-items" attribute="query on-display">
+<dom-module id="od-work-items" attribute="query">
   <template>
 
     <style>
@@ -138,6 +138,15 @@
             p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
           }
         }(this));
+
+        window.addEventListener('WebComponentsReady', function(p) {
+          return function() {
+            if (window.location.hash === '#/Work') {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
+          }
+        }(this));
+
         window.addEventListener('page-loaded', function(p) {
           return function(e) {
             if (e.detail.targetIndex === 1) {
@@ -145,10 +154,11 @@
             }
           }
         }(this));
+
       },
 
       openPage: function() {
-        this.fire('open-page');
+        window.location = '#/Work/work_item1'
       },
 
       calcGrid: function(container, item) {
