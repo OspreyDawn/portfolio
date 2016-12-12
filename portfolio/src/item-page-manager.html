@@ -1,3 +1,4 @@
+<link rel="import" href="../bower_components/app-elements/app-elements.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 
@@ -12,6 +13,26 @@
         height: 100%;
         position: absolute;
       }
+      .container {
+        max-width: 44rem;
+        padding: 0 1.5rem;
+        margin: 0 auto;
+        padding-top: 2rem;
+        @apply(--layout-vertical);
+      }
+      .button {
+        display: inline-block;
+        position: fixed;
+        padding: 1rem;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        cursor: pointer;
+        @apply(--layout-self-start);
+      }
+      .button:hover {
+        color: white;
+        background: lightgrey;
+      }
       #overlay {
         width: 100%;
         height: 100%;
@@ -21,9 +42,25 @@
       }
     </style>
 
-    <div id="overlay"></div>
+    <app-location
+        route="{{route}}"
+        use-hash-as-path>
+    </app-location>
 
-    <!-- <item-page></item-page> -->
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{pageData}}"
+      tail="{{subRoute}}">
+    </app-route>
+
+    <app-route
+      route="{{subRoute}}"
+      pattern="/:item"
+      data="{{subRouteData}}">
+    </app-route>
+
+    <div id="overlay"></div>
 
   </template>
 
@@ -42,6 +79,11 @@
       behaviors: [Polymer.NeonAnimationRunnerBehavior],
 
       properties: {
+        subRoute: {
+          type: Object,
+          observer: 'handleRoute'
+        },
+
         animationConfig: {
             value: function() {
               return {
@@ -84,12 +126,12 @@
       },
 
       ready: function() {
-        window.addEventListener('open-page', function(p) {
+        /* window.addEventListener('open-page', function(p) {
           return function() {
             p.style.display = 'block';
             p.initPage();
           }
-        }(this));
+        }(this)); */
 
         window.addEventListener('close-page', function(p) {
           return function() {
@@ -98,12 +140,12 @@
         }(this));
       },
 
-      initPage: function() {
+      initPage: function(item) {
         if (this.pageArray.length === 0) {
           this.fire('wheel-state', {active: false});
         }
 
-        this.createPage();
+        this.createPage(item);
         this.initOverlay();
 
         this.playAnimation('overlay-fade-in');
@@ -115,12 +157,13 @@
         this.$.overlay.style.zIndex = 3 + this.pageArray.length;
       },
 
-      createPage: function() {
+      createPage: function(item) {
         var newPage = document.createElement('item-page');
 
         this.appendChild(newPage);
 
-        newPage.setAttribute('id', 'item' + this.pageArray.length);
+        newPage.setAttribute('id', item);
+        newPage.setAttribute('item', item);
         newPage.style.display = 'none';
         newPage.style.zIndex = 4 + this.pageArray.length;
 
@@ -159,20 +202,37 @@
         this.playAnimation('page-exit');
       },
 
+      handleRoute: function() {
+        if (this.subRouteData.item) {
+
+          if (!this.currentPage || this.currentPage.getAttribute('item') != this.subRouteData.item) {
+            this.style.display = 'block';
+            this.initPage(this.subRouteData.item);
+          }
+
+          delete this.subRouteData.item;
+        }
+      },
+
       _onNeonAnimationFinish: function() {
         switch (this.currentState) {
           case pageState.OUTVIEW:
             if (this.deleteAction) {
               this.removeChild(this.currentPage);
               this.pageArray.splice(-1, 1);
+
               this.currentPage = this.pageArray[this.pageArray.length - 1];
 
               this.deleteAction = false;
             }
 
             if (this.pageArray.length > 0) {
+              window.location = '#/Work/' + this.currentPage.getAttribute('item');
+
               this.$.overlay.style.zIndex = this.$.overlay.style.zIndex = 3 + this.pageArray.length;
             } else {
+              window.location = '#/Work';
+
               this.$.overlay.style.opacity = 0;
               this.style.display = 'none';
               this.fire('wheel-state', {active: true});
