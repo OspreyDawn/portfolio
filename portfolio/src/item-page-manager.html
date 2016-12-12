@@ -196,8 +196,7 @@
       },
 
       handleRoute: function() {
-        if (this.subRouteData.item) {
-
+        if (this.subRouteData && this.subRouteData.item) {
           if (!this.currentPage || this.currentPage.getAttribute('item') != this.subRouteData.item) {
             this.style.display = 'block';
             this.initPage(this.subRouteData.item);
