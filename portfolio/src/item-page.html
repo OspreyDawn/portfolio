@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
-<dom-module id="item-page" attribute="item exit-to">
+<dom-module id="item-page" attribute="host item exit-to">
   <template>
     <style>
       :host {
@@ -39,7 +39,7 @@
 
     <iron-ajax
       auto
-      url="src/content/work_items/{{item}}/{{item}}.json"
+      url="src/content/{{host}}_items/{{item}}/{{item}}.json"
       handle-as="json"
       last-response="{{response}}">
     </iron-ajax>

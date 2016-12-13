@@ -1,3 +1,9 @@
-# This is a test page.
+# This is another test Work Article.
 
-This is a test to see if this works.
+There will be a header image.
+
+There will be meta tags
+
+There will be a short description.
+
+There will be links to related Thoughts articles.

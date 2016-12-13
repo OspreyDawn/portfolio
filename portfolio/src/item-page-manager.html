@@ -132,10 +132,12 @@
 
       createPage: function(item) {
         var newPage = document.createElement('item-page');
+        var host = this.pageData.page;
 
         this.appendChild(newPage);
 
         newPage.setAttribute('id', item);
+        newPage.setAttribute('host', host);
         newPage.setAttribute('item', item);
         newPage.style.display = 'none';
         newPage.style.zIndex = 4 + this.pageArray.length;
@@ -212,11 +214,11 @@
             }
 
             if (this.pageArray.length > 0) {
-              window.location = '#/Work/' + this.currentPage.getAttribute('item');
+              window.location = '#/' + this.currentPage.getAttribute('host') + '/' + this.currentPage.getAttribute('item');
 
               this.$.overlay.style.zIndex = this.$.overlay.style.zIndex = 3 + this.pageArray.length;
             } else {
-              window.location = '#/Work';
+              window.location = '#/' + this.pageData.page + '/';
 
               this.$.overlay.style.opacity = 0;
               this.style.display = 'none';
