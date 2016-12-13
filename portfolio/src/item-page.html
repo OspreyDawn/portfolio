@@ -2,7 +2,7 @@
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
-<dom-module id="item-page" attribute="item">
+<dom-module id="item-page" attribute="item exit-to">
   <template>
     <style>
       :host {
@@ -54,7 +54,8 @@
     <div class="container">
       <div class="button" id="exitBtn" on-tap="closePage">&#8592;</div>
       <div id="article">
-        <a href="#/Work/work_item2">Make a new Page.</a>
+        <a href="#/Work/work_item2">Make a new work-item2 page</a>
+        <a href="#/Work/work_item1">Make a new work-item1 page</a>
         <marked-element markdown="{{textResponse}}">
           <div class="markdown-html"></div>
         </marked-element>

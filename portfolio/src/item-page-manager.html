@@ -13,26 +13,6 @@
         height: 100%;
         position: absolute;
       }
-      .container {
-        max-width: 44rem;
-        padding: 0 1.5rem;
-        margin: 0 auto;
-        padding-top: 2rem;
-        @apply(--layout-vertical);
-      }
-      .button {
-        display: inline-block;
-        position: fixed;
-        padding: 1rem;
-        border: 1px solid lightgrey;
-        border-radius: 5px;
-        cursor: pointer;
-        @apply(--layout-self-start);
-      }
-      .button:hover {
-        color: white;
-        background: lightgrey;
-      }
       #overlay {
         width: 100%;
         height: 100%;
@@ -166,10 +146,14 @@
       },
 
       deletePage: function() {
-        this.currentState = pageState.OUTVIEW;
-        this.deleteAction = true;
-        this.pageExitAnim(this.currentPage);
-        this.playAnimation('overlay-fade-out');
+        if (this.currentPage) {
+          this.currentState = pageState.OUTVIEW;
+          this.deleteAction = true;
+          this.pageExitAnim(this.currentPage);
+          this.playAnimation('overlay-fade-out');
+        } else {
+          return
+        }
       },
 
       pageEnterAnim: function(element) {
@@ -203,6 +187,15 @@
           }
 
           delete this.subRouteData.item;
+        } else if (this.subRouteData && !this.subRouteData.item) {
+          var currentLength = (this.pageArray.length - 1);
+
+          for (i = 0; i < (currentLength); i++) {
+            this.removeChild(this.pageArray[0]);
+            this.pageArray.splice(0, 1);
+          }
+
+          this.deletePage();
         }
       },
 
