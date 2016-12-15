@@ -142,6 +142,8 @@
         newPage.style.display = 'none';
         newPage.style.zIndex = 4 + this.pageArray.length;
 
+        this.fire('item-page-created');
+
         this.pageArray.push(newPage);
 
         this.currentPage = newPage;

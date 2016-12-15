@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 
 <link rel="import" href="od-page-nav.html">
 <link rel="import" href="touch-test-area.html">
@@ -38,6 +39,7 @@
         margin-right: 4rem;
         margin-bottom: 0.5rem;
         transition: opacity 0.3s;
+        @apply(--layout-vertical);
       }
       .workItem  a {
         display: block;
@@ -91,12 +93,28 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
+    <iron-ajax
+      auto
+      url="{{indexURL}}"
+      handle-as="json"
+      last-response="{{response}}"
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <iron-ajax
+      auto
+      url="{{itemURL}}"
+      handle-as="json"
+      last-response="{{itemResponse}}"
+      on-response="handleItemResponse">
+    </iron-ajax>
+
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="workItem">
-            <a href="#/Work/work_item1">
-              <div class="pjtImg">{{item}}</div>
+            <a href="{{item.link}}">
+              <iron-image class="pjtImg" sizing="cover" preload fade src="{{item.img}}"></iron-image>
               <div class="pjtMeta">
                 <div class="pjtTitle">Project Name</div>
                 <div class="pjtSubtitle">Year | Type</div>
@@ -127,9 +145,28 @@
           value: function() {
             return [];
           }
+        },
+
+        manifestLinks: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        initArray: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        testArray: {
+          type: Array,
+          value: [],
+          notify: true
         }
       },
 
+      manifestIndex: 0,
       viewWidth: 0,
       threshold: 0,
       indexSelector: 0,
@@ -141,8 +178,36 @@
         'item-page-changed' : 'navVisibility'
       },
 
+      handleResponse: function() {
+        var tempArray = []
+
+        for (i = 0; i < this.response.work.length; i++) {
+          this.manifestLinks.push(this.response.work[i]);
+
+          tempArray.push(i);
+        }
+
+        this.testArray = tempArray;
+
+        this.itemURL = this.manifestLinks[this.manifestIndex];
+      },
+
+      handleItemResponse: function() {
+        this.initArray.push(this.itemResponse);
+
+        ++this.manifestIndex;
+
+        if (this.manifestIndex < this.manifestLinks.length) {
+          this.itemURL = this.manifestLinks[this.manifestIndex];
+        } else if (this.manifestIndex === this.manifestLinks.length) {
+          this.testArray = [];
+
+          this.testArray = this.initArray
+        }
+      },
+
       ready: function() {
-        this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+        this.indexURL = '/src/content/item-index.json';
 
         window.addEventListener('resize', function(p) {
           return function() {
@@ -165,7 +230,6 @@
             }
           }
         }(this));
-
       },
 
       calcGrid: function(container, item) {

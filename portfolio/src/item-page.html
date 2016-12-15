@@ -1,8 +1,9 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
-<dom-module id="item-page" attribute="host item exit-to">
+<dom-module id="item-page" attribute="host item">
   <template>
     <style>
       :host {
@@ -19,9 +20,15 @@
         padding-top: 2rem;
         @apply(--layout-vertical);
       }
+      .nav {
+        width: 100%;
+        height: 12rem;
+        position: fixed;
+        background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 60%, rgba(255, 255, 255, 0));
+        display: none;
+      }
       .button {
         display: inline-block;
-        position: fixed;
         padding: 1rem;
         border: 1px solid lightgrey;
         border-radius: 5px;
@@ -32,6 +39,13 @@
         color: white;
         background: lightgrey;
       }
+      .footer {
+        width: 100%;
+        height: 7rem;
+        position: fixed;
+        bottom: 0;
+        background: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+      }
       #article {
         margin:  4rem 0 10rem 0;
       }
@@ -41,7 +55,8 @@
       auto
       url="src/content/{{host}}_items/{{item}}/{{item}}.json"
       handle-as="json"
-      last-response="{{response}}">
+      last-response="{{response}}"
+      on-response="headerGen">
     </iron-ajax>
 
     <iron-ajax
@@ -51,24 +66,71 @@
       last-response="{{textResponse}}">
     </iron-ajax>
 
-    <div class="container">
-      <div class="button" id="exitBtn" on-tap="closePage">&#8592;</div>
+    <!-- <iron-image class="imgHeader" sizing="cover" preload fade src="{{response.img}}"></iron-image> -->
+    <div class="nav">
+      <div id="navContainer" class="container">
+        <div class="button" id="navExitBtn" on-tap="closePage">&#8592;</div>
+      </div>
+    </div>
+
+    <div id="bodyContainer" class="container">
+      <div class="button" id="bodyExitBtn" on-tap="closePage">&#8592;</div>
       <div id="article">
         <a href="#/Work/work_item1">work-item1</a>
         <a href="#/Work/work_item2"> work-item2</a>
         <a href="#/Thoughts/thoughts_item1"> thoughts-item1</a>
         <a href="#/Thoughts/thoughts_item2"> thoughts-item2</a>
+        <template is="dom-repeat" items="{{response.meta}}">
+          <a href="#/{{host}}/tags/{{item}}">{{item}}</a>
+        </template>
+        <p>{{response.date}}</p>
         <marked-element markdown="{{textResponse}}">
           <div class="markdown-html"></div>
         </marked-element>
       </div>
     </div>
+
+    <div class="footer"></div>
   </template>
 
   <script>
     Polymer({
 
       is: 'item-page',
+
+      listeners: {
+        'wheel' : 'scrollDetect'
+      },
+
+      headerGen: function() {
+        if (this.host === 'Work') {
+          header = document.createElement('iron-image');
+
+          this.insertBefore(header, this.$$('#bodyContainer'));
+
+          header.setAttribute('sizing', 'cover');
+          header.setAttribute('preload', '');
+          header.setAttribute('fade', '');
+          header.setAttribute('src', this.response.img);
+
+          header.style.display = 'block';
+          header.style.width = '100%';
+          header.style.height = '28rem';
+          header.style.backgroundColor = 'black';
+        } else {
+          return
+        }
+      },
+
+      scrollDetect: function() {
+        if (this.scrollTop >= 444) {
+          this.$.bodyExitBtn.style.opacity = 0;
+          this.$$('.nav').style.display = 'block';
+        } else if (this.scrollTop < 444) {
+          this.$.bodyExitBtn.style.opacity = 1;
+          this.$$('.nav').style.display = 'none';
+        };
+      },
 
       closePage: function() {
         this.fire('close-page');
