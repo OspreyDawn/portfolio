@@ -179,7 +179,7 @@
       },
 
       handleResponse: function() {
-        var tempArray = []
+        var tempArray = [];
 
         for (i = 0; i < this.response.work.length; i++) {
           this.manifestLinks.push(this.response.work[i]);
@@ -244,7 +244,7 @@
         gridW = Math.round(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
-        pages = Math.ceil(this.testArray.length / (gridW * gridH));
+        pages = Math.round(this.testArray.length / (gridW * gridH));
 
         if (this.smallScreen) {
           this.threshold = 200;
@@ -254,6 +254,12 @@
 
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
+
+        if (this.indexLength === 0) {
+          this.$.pageNav.style.display = 'none'
+        } else {
+          this.$.pageNav.style.display = 'block'
+        }
 
         this.fire('made-grid', {width: this.viewWidth, length: this.indexLength, content: container});
       },

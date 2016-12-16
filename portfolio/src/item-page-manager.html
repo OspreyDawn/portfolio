@@ -87,8 +87,12 @@
           value: false
         },
 
+        previousPage: {
+          type: Object
+        },
+
         currentPage: {
-          value: null
+          type: Object
         },
 
         currentOverlay: {
@@ -106,14 +110,16 @@
       },
 
       ready: function() {
-        window.addEventListener('close-page', function(p) {
+        window.addEventListener('WebComponentsReady', function(p) {
           return function() {
-            p.deletePage();
+            if (p.pageArray.length === 1) {
+              p.fire('wheel-state', {active: false});
+            }
           }
         }(this));
       },
 
-      initPage: function(item) {
+      openPage: function(item) {
         if (this.pageArray.length === 0) {
           this.fire('wheel-state', {active: false});
         }
@@ -133,6 +139,7 @@
       createPage: function(item) {
         var newPage = document.createElement('item-page');
         var host = this.pageData.page;
+        var pageIndex = this.pageArray.length - 1;
 
         this.appendChild(newPage);
 
@@ -144,12 +151,20 @@
 
         this.fire('item-page-created');
 
+        if (!this.currentPage) {
+          newPage.setAttribute('exit', '#/' + newPage.host);
+        } else {
+          this.previousPage = this.currentPage;
+
+          newPage.setAttribute('exit', '#/' + this.pageArray[pageIndex].host + '/' + this.pageArray[pageIndex].item);
+        }
+
         this.pageArray.push(newPage);
 
         this.currentPage = newPage;
       },
 
-      deletePage: function() {
+      closePage: function() {
         if (this.currentPage) {
           this.currentState = pageState.OUTVIEW;
           this.deleteAction = true;
@@ -185,9 +200,21 @@
 
       handleRoute: function() {
         if (this.subRouteData && this.subRouteData.item) {
-          if (!this.currentPage || this.currentPage.getAttribute('item') != this.subRouteData.item) {
-            this.style.display = 'block';
-            this.initPage(this.subRouteData.item);
+          this.style.display = 'block';
+
+          if (this.currentPage && this.previousPage) {
+            switch (this.subRouteData.item) {
+              case this.currentPage.item:
+                return
+                break;
+              case this.previousPage.item:
+                this.closePage();
+                break;
+              default:
+                this.openPage(this.subRouteData.item);
+            }
+          } else {
+            this.openPage(this.subRouteData.item);
           }
 
           delete this.subRouteData.item;
@@ -199,7 +226,7 @@
             this.pageArray.splice(0, 1);
           }
 
-          this.deletePage();
+          this.closePage();
         }
       },
 
@@ -211,6 +238,12 @@
               this.pageArray.splice(-1, 1);
 
               this.currentPage = this.pageArray[this.pageArray.length - 1];
+
+              if (this.pageArray.length > 1) {
+                this.previousPage = this.pageArray[this.pageArray.length - 2];
+              } else {
+                delete this.previousPage;
+              }
 
               this.deleteAction = false;
             }

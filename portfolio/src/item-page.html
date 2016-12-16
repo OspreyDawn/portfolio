@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
-<dom-module id="item-page" attribute="host item">
+<dom-module id="item-page" attribute="host item exit">
   <template>
     <style>
       :host {
@@ -29,10 +29,11 @@
       }
       .button {
         display: inline-block;
+        color: inherit;
+        text-decoration: none;
         padding: 1rem;
         border: 1px solid lightgrey;
         border-radius: 5px;
-        cursor: pointer;
         @apply(--layout-self-start);
       }
       .button:hover {
@@ -69,12 +70,12 @@
     <!-- <iron-image class="imgHeader" sizing="cover" preload fade src="{{response.img}}"></iron-image> -->
     <div class="nav">
       <div id="navContainer" class="container">
-        <div class="button" id="navExitBtn" on-tap="closePage">&#8592;</div>
+        <a class="button" id="navExitBtn" href="{{exit}}">&#8592;</a>
       </div>
     </div>
 
     <div id="bodyContainer" class="container">
-      <div class="button" id="bodyExitBtn" on-tap="closePage">&#8592;</div>
+      <a class="button" id="bodyExitBtn" href="{{exit}}">&#8592;</a>
       <div id="article">
         <a href="#/Work/work_item1">work-item1</a>
         <a href="#/Work/work_item2"> work-item2</a>
