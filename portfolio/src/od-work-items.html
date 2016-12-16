@@ -113,7 +113,7 @@
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="workItem">
-            <a href="{{item.link}}">
+            <a href="{{item.link}}" draggable="false">
               <iron-image class="pjtImg" sizing="cover" preload fade src="{{item.img}}"></iron-image>
               <div class="pjtMeta">
                 <div class="pjtTitle">Project Name</div>
@@ -261,10 +261,22 @@
             itemW = item.offsetWidth + itemMarginRight,
             itemH = item.offsetHeight + itemMarginBottom;
 
-        gridW = Math.round(containerW / itemW);
+        gridW = Math.floor(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
-        pages = Math.round(this.testArray.length / (gridW * gridH));
+        console.log(gridW, gridH);
+
+        rawPageNum = this.testArray.length / (gridW * gridH);
+
+        if (rawPageNum > 1) {
+          calcPages = Math.ceil(rawPageNum);
+        } else {
+          calcPages = Math.floor(rawPageNum);
+        }
+
+        pages = calcPages;
+
+        console.log(this.testArray.length / (gridW * gridH))
 
         if (this.smallScreen) {
           this.threshold = 200;
@@ -274,6 +286,8 @@
 
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
+
+        console.log(this.viewWidth, this.indexLength);
 
         if (this.indexLength === 0) {
           this.$.pageNav.style.visibility = 'hidden';
