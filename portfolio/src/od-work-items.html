@@ -147,6 +147,10 @@
           }
         },
 
+        isCurrentPage: {
+          type: Boolean,
+        },
+
         manifestLinks: {
           type: Array,
           value: [],
@@ -175,7 +179,49 @@
       nextPosition: 0,
 
       listeners: {
-        'item-page-changed' : 'navVisibility'
+        'item-page-changed' : 'navVisibility',
+      },
+
+      ready: function() {
+        this.indexURL = '/src/content/item-index.json';
+
+        window.addEventListener('site-index-changed', function(p) {
+          return function(e) {
+            p.pageStatus(e);
+          }
+        }(this));
+
+        window.addEventListener('resize', function(p) {
+          return function() {
+            if (p.isCurrentPage) {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
+          }
+        }(this));
+
+        window.addEventListener('WebComponentsReady', function(p) {
+          return function() {
+            if (p.isCurrentPage) {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
+          }
+        }(this));
+
+        window.addEventListener('page-loaded', function(p) {
+          return function(e) {
+            if (e.detail.targetIndex === 1) {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
+          }
+        }(this));
+      },
+
+      pageStatus: function(e) {
+        if (e.detail.indexTarget === 1) {
+          this.isCurrentPage = true;
+        } else {
+          return
+        }
       },
 
       handleResponse: function() {
@@ -202,34 +248,8 @@
         } else if (this.manifestIndex === this.manifestLinks.length) {
           this.testArray = [];
 
-          this.testArray = this.initArray
+          this.testArray = this.initArray;
         }
-      },
-
-      ready: function() {
-        this.indexURL = '/src/content/item-index.json';
-
-        window.addEventListener('resize', function(p) {
-          return function() {
-            p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
-          }
-        }(this));
-
-        window.addEventListener('WebComponentsReady', function(p) {
-          return function() {
-            if (window.location.hash === '#/Work') {
-              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
-            }
-          }
-        }(this));
-
-        window.addEventListener('page-loaded', function(p) {
-          return function(e) {
-            if (e.detail.targetIndex === 1) {
-              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
-            }
-          }
-        }(this));
       },
 
       calcGrid: function(container, item) {
@@ -256,9 +276,9 @@
         this.indexLength = pages;
 
         if (this.indexLength === 0) {
-          this.$.pageNav.style.display = 'none'
+          this.$.pageNav.style.visibility = 'hidden';
         } else {
-          this.$.pageNav.style.display = 'block'
+          this.$.pageNav.style.visibility = 'visible';
         }
 
         this.fire('made-grid', {width: this.viewWidth, length: this.indexLength, content: container});

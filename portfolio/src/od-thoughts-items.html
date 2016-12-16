@@ -179,6 +179,10 @@
           value: function() {
             return [];
           }
+        },
+
+        isCurrentPage: {
+          type: Boolean,
         }
       },
 
@@ -190,21 +194,30 @@
       nextPosition: 0,
 
       listeners: {
-        'item-page-changed' : 'navVisibility'
+        'item-page-changed' : 'navVisibility',
+        'site-index-changed' : 'pageStatus'
       },
 
       ready: function() {
         this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
 
+        window.addEventListener('site-index-changed', function(p) {
+          return function(e) {
+            p.pageStatus(e);
+          }
+        }(this));
+
         window.addEventListener('resize', function(p) {
           return function() {
-            p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));
+            if (p.isCurrentPage) {
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+            }
           }
         }(this));
 
         window.addEventListener('WebComponentsReady', function(p) {
           return function() {
-            if (window.location.hash === '#/Thoughts') {
+            if (p.isCurrentPage) {
               p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));
             }
           }
@@ -217,6 +230,14 @@
             }
           }
         }(this));
+      },
+
+      pageStatus: function(e) {
+        if (e.detail.indexTarget === 2) {
+          this.isCurrentPage = true;
+        } else {
+          return
+        }
       },
 
       calcGrid: function(container, item) {

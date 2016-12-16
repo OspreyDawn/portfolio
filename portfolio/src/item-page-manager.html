@@ -167,12 +167,30 @@
       closePage: function() {
         if (this.currentPage) {
           this.currentState = pageState.OUTVIEW;
-          this.deleteAction = true;
           this.pageExitAnim(this.currentPage);
+          this.deletePage();
           this.playAnimation('overlay-fade-out');
         } else {
           return
         }
+      },
+
+      deletePage: function() {
+        this.pageArray.splice(-1, 1);
+
+        if (this.pageArray.length > 1) {
+          this.previousPage = this.pageArray[this.pageArray.length - 2];
+        } else {
+          delete this.previousPage;
+        }
+
+        setTimeout(function(p) {
+          return function() {
+            p.removeChild(p.currentPage);
+
+            p.currentPage = p.pageArray[p.pageArray.length - 1];
+          }
+        }(this), 250);
       },
 
       pageEnterAnim: function(element) {
@@ -233,21 +251,6 @@
       _onNeonAnimationFinish: function() {
         switch (this.currentState) {
           case pageState.OUTVIEW:
-            if (this.deleteAction) {
-              this.removeChild(this.currentPage);
-              this.pageArray.splice(-1, 1);
-
-              this.currentPage = this.pageArray[this.pageArray.length - 1];
-
-              if (this.pageArray.length > 1) {
-                this.previousPage = this.pageArray[this.pageArray.length - 2];
-              } else {
-                delete this.previousPage;
-              }
-
-              this.deleteAction = false;
-            }
-
             if (this.pageArray.length > 0) {
               window.location = '#/' + this.currentPage.getAttribute('host') + '/' + this.currentPage.getAttribute('item');
 
