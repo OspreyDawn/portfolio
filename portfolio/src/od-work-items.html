@@ -264,8 +264,6 @@
         gridW = Math.floor(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
-        console.log(gridW, gridH);
-
         rawPageNum = this.testArray.length / (gridW * gridH);
 
         if (rawPageNum > 1) {
@@ -276,8 +274,6 @@
 
         pages = calcPages;
 
-        console.log(this.testArray.length / (gridW * gridH))
-
         if (this.smallScreen) {
           this.threshold = 200;
         } else {
@@ -286,8 +282,6 @@
 
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
-
-        console.log(this.viewWidth, this.indexLength);
 
         if (this.indexLength === 0) {
           this.$.pageNav.style.visibility = 'hidden';
