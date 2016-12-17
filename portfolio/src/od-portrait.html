@@ -168,7 +168,9 @@
 
         window.addEventListener('site-index-changed', function(p) {
           return function(e) {
-            p.loadIn = false;
+            if (e.detail.indexTarget != 0) {
+              p.loadIn = false;
+            }
             p.slidePortraitY(e);
           }
         }(this));
