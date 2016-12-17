@@ -213,7 +213,7 @@
 
       handleRoute: function() {
         this.indexPrevious = this.indexSelector;
-        currentPage = this.$.pages.children;
+        homePage = this.$.Home;
 
         if (this.pageData) {
           switch (this.pageData.page) {
@@ -223,11 +223,10 @@
 
               this.fire('hero-index-changed', {indexTarget: 1});
               this.indexSelector = 0;
-              this.loadingContainer = currentPage[this.indexSelector].getElements(this.pageData.page);
+              this.loadingContainer = homePage.getElements(this.pageData.page);
               break;
             case 'Home':
               this.indexSelector = 0;
-              this.loadingContainer = currentPage[this.indexSelector].getElements(this.pageData.page);
               break;
             case 'Work':
               this.indexSelector = 1;
@@ -247,9 +246,11 @@
             this.fire('hero-index-changed', {indexTarget: 0});
           }
 
+          this.loadingContainer = homePage.getElements('Home');
+
           this.selected = this.siteIndex[this.indexSelector];
         } else {
-          this.loadingContainer = this.$.pages.children[this.indexSelector].getElements('Home');
+          this.loadingContainer = homePage.getElements('Home');
         }
       },
 
