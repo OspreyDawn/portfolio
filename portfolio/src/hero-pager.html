@@ -15,7 +15,7 @@
       selected="[[selected]]">
 
       <grey-box-hero id="heroPage" query="{{query}}"></grey-box-hero>
-      <grey-box-about query="{{query}}"></grey-box-about>
+      <grey-box-about id="aboutPage" query="{{query}}"></grey-box-about>
 
     </neon-animated-pages>
 
@@ -91,6 +91,16 @@
             p.heroDestiny(e);
           }
         }(this));
+      },
+
+      getElements: function(page) {
+        if (page === 'Home'){
+          return this.$.heroPage.getAnimatable();
+        } else if (page === 'About') {
+          return this.$.aboutPage.getAnimatable();
+        } else {
+          return
+        }
       },
 
       heroDestiny: function(e) {

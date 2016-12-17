@@ -88,7 +88,17 @@
 
       is: 'osprey-dawn',
 
+      behaviors: [
+        Polymer.NeonAnimatableBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
       properties: {
+        animationConfig: {
+          value: function() {
+            return [];
+          }
+        },
         prop1: {
           type: String,
           value: 'osprey-dawn',
@@ -122,6 +132,9 @@
         indexLength: {
           value: 0
         },
+        loadingContainer: {
+          type: Object
+        },
       },
 
       listeners: {
@@ -140,6 +153,7 @@
         window.addEventListener('WebComponentsReady', function(p) {
           return function() {
             p.$.loadOverlay.style.display = 'none';
+            p.loadAnimation(p.loadingContainer);
           }
         }(this));
       },
@@ -199,6 +213,7 @@
 
       handleRoute: function() {
         this.indexPrevious = this.indexSelector;
+        currentPage = this.$.pages.children;
 
         if (this.pageData) {
           switch (this.pageData.page) {
@@ -208,9 +223,11 @@
 
               this.fire('hero-index-changed', {indexTarget: 1});
               this.indexSelector = 0;
+              this.loadingContainer = currentPage[this.indexSelector].getElements(this.pageData.page);
               break;
             case 'Home':
               this.indexSelector = 0;
+              this.loadingContainer = currentPage[this.indexSelector].getElements(this.pageData.page);
               break;
             case 'Work':
               this.indexSelector = 1;
@@ -231,8 +248,35 @@
           }
 
           this.selected = this.siteIndex[this.indexSelector];
+        } else {
+          this.loadingContainer = this.$.pages.children[this.indexSelector].getElements('Home');
         }
-      }
+      },
+
+      loadAnimation: function(container) {
+        var neonElements = container.children;
+
+        var neonArray = Array.prototype.slice.call(neonElements);
+
+        this.animationConfig['load-in'] = [{
+          name: 'cascaded-animation',
+          animation: 'fade-in-animation',
+          nodes: neonArray,
+          timing: {
+            delay: 2500,
+            duration: 1000
+          }
+        }, {
+          name: 'cascaded-animation',
+          animation: 'slide-from-top-animation',
+          nodes: neonArray,
+          timing: {
+            delay: 2500,
+            duration: 1000
+          }
+        }];
+        this.playAnimation('load-in');
+      },
     });
   </script>
 </dom-module>
