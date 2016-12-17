@@ -283,7 +283,7 @@
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
 
-        if (this.indexLength === 0) {
+        if (this.indexLength <= 1) {
           this.$.pageNav.style.visibility = 'hidden';
         } else {
           this.$.pageNav.style.visibility = 'visible';

@@ -96,57 +96,40 @@
       query-matches="{{smallScreen}}">
     </iron-media-query>
 
+    <iron-ajax
+      auto
+      url="{{indexURL}}"
+      handle-as="json"
+      last-response="{{response}}"
+      on-response="handleResponse">
+    </iron-ajax>
+
+    <iron-ajax
+      auto
+      url="{{itemURL}}"
+      handle-as="json"
+      last-response="{{itemResponse}}"
+      on-response="handleItemResponse">
+    </iron-ajax>
+
     <touch-test-area id="touchArea" view-width="{{viewWidth}}" index-length="{{indexLength}}" threshold="{{threshold}}">
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="thoughtsItem">
-            <h2>Test Article Title</h2>
-            <p class="artDate">August 21st, 2016</p>
+            <h2>{{item.title}}</h2>
+            <p class="artDate">{{item.date}}</p>
             <div class="artMeta">
-              <a href="#">#HashTag</a>,
-              <a href="#">#HashTag</a>,
-              <a href="#">#HashTag</a>,
-              <a href="#">#HashTag</a>
+              <template is="dom-repeat" items="{{item.meta}}">
+                <a href="#">{{item}}</a>
+              </template>
             </div>
             <div class="article">
-
-                When we humans navigate the world around us, we do so through the
-                analysation of all the data that is absorbed by our senses and
-                combine it with our inherent knowledge. There are the usual senses
-                people can identify which are the most obvious like sight, sound, touch,
-                taste and smell but there are an abundance of others that are implicit
-                in the everyday, things like thermoception (the ability to detect
-                temperature) and proprioception (the ability to sense where your body
-                is in space).<p></p>As soon as we enter the digital world, we lose almost all of our senses;
-                we are primarily relying on learned knowledge accumulated through past
-                experiences. Vision is our primary sense stimulated through the use
-                of visual displays, sometimes sound is present trhough speakers and
-                even rarer still is the use of touch through vibration. These seem
-                to be the only three senses stimulated in mainstream digital devices.
-                Out of the three, vision is the only sense that permeates all digital
-                experiences that humans encounter on a daily basis; one sense out of
-                many. Not only do interfaces have to have to account for this lack
-                of sensorial input but they have to communicate a visual language
-                that accounts for this. This puts enormous strain on a user's past
-                knowledge to navigate an interface; since the base knowledge of the
-                everyday user varies wildly so does the effective mileage of any given
-                interface.<p></p>There's a reason why Apple used skeuomorphism when they first released
-                the iPhone. The visual replication of real, tangible objects in an
-                interface to communicate how one might interact with them in a digital
-                way makes sense; certain physical objects provide affordances that
-                contextual-less digital artefacts can't. Prior to the iPhone, there
-                had been no uniform visual language to relay how one might interact
-                with an interface totally reliant on touch. The Notepad app looked
-                like an actual note pad, with yellow paper pages and stitching, buttons
-                had visual cues to make them look three dimensional that depressed
-                when touched much like one would expect to see in the real world.
-                iOS was brand new at the time so they had to communicate how to navigate
-                the world that they had created in terms that they knew the everyday
-                user would understand.<p></p>
-
+              <template is="dom-repeat" items="{{item.preview}}">
+                {{item}}<p></p>
+              </template>
             </div>
             <div class="artFoot">
-              <div class="button"><a href="#/Thoughts/thoughts_item1">Continue Reading</a></div>
+              <div class="button"><a href="{{item.link}}">Continue Reading</a></div>
             </div>
           </div>
         </template>
@@ -183,9 +166,34 @@
 
         isCurrentPage: {
           type: Boolean,
+        },
+
+        manifestLinks: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        initArray: {
+          type: Array,
+          value: [],
+          notify: true
+        },
+
+        testArray: {
+          type: Array,
+          value: [],
+          notify: true
         }
       },
 
+      manifestLinks: {
+        type: Array,
+        value: [],
+        notify: true
+      },
+
+      manifestIndex: 0,
       viewWidth: 0,
       threshold: 0,
       indexSelector: 0,
@@ -199,7 +207,7 @@
       },
 
       ready: function() {
-        this.testArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+        this.indexURL = '/src/content/item-index.json';
 
         window.addEventListener('site-index-changed', function(p) {
           return function(e) {
@@ -210,7 +218,7 @@
         window.addEventListener('resize', function(p) {
           return function() {
             if (p.isCurrentPage) {
-              p.calcGrid(p.$$('#itemContainer'), p.$$('.workItem'));
+              p.calcGrid(p.$$('#itemContainer'), p.$$('.thoughtsItem'));
             }
           }
         }(this));
@@ -240,6 +248,34 @@
         }
       },
 
+      handleResponse: function() {
+        var tempArray = [];
+
+        for (i = 0; i < this.response.thoughts.length; i++) {
+          this.manifestLinks.push(this.response.thoughts[i]);
+
+          tempArray.push(i);
+        }
+
+        this.testArray = tempArray;
+
+        this.itemURL = this.manifestLinks[this.manifestIndex];
+      },
+
+      handleItemResponse: function() {
+        this.initArray.push(this.itemResponse);
+
+        ++this.manifestIndex;
+
+        if (this.manifestIndex < this.manifestLinks.length) {
+          this.itemURL = this.manifestLinks[this.manifestIndex];
+        } else if (this.manifestIndex === this.manifestLinks.length) {
+          this.testArray = [];
+
+          this.testArray = this.initArray;
+        }
+      },
+
       calcGrid: function(container, item) {
         var gridW, gridH, pages = null,
             containerW = container.offsetWidth,
@@ -249,10 +285,18 @@
             itemW = item.offsetWidth + itemMarginRight,
             itemH = item.offsetHeight + itemMarginBottom;
 
-        gridW = Math.round(containerW / itemW);
+        gridW = Math.floor(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
-        pages = Math.ceil(this.testArray.length / (gridW * gridH));
+        rawPageNum = this.testArray.length / (gridW * gridH);
+
+        if (rawPageNum > 1) {
+          calcPages = Math.ceil(rawPageNum);
+        } else {
+          calcPages = Math.floor(rawPageNum);
+        }
+
+        pages = calcPages;
 
         if (this.smallScreen) {
           this.threshold = 200;
@@ -262,6 +306,12 @@
 
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
+
+        if (this.indexLength <= 1) {
+          this.$.pageNav.style.visibility = 'hidden';
+        } else {
+          this.$.pageNav.style.visibility = 'visible';
+        }
 
         this.fire('made-grid', {width: this.viewWidth, length: this.indexLength, content: container});
       },
