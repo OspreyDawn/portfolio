@@ -46,8 +46,14 @@
       }
       .thoughtsItem {
         width: 32rem;
+        height: 100%;
         margin-right: 4rem;
         margin-bottom: 2rem;
+        @apply(--layout-vertical);
+        @apply(--layout-justified);
+      }
+      .artMain {
+        width: 100%;
         overflow: hidden;
         @apply(--layout-vertical);
       }
@@ -128,18 +134,26 @@
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="thoughtsItem">
-            <div id="title"><h2>{{item.title}}</h2></div>
-            <p class="artDate">{{item.date}}</p>
-            <div class="artMeta">
-              <template is="dom-repeat" items="{{item.meta}}">
-                <a href="#">{{item}}</a>
-              </template>
+            <div class="artMain">
+              <div id="title"><h2>{{item.title}}</h2></div>
+
+              <p class="artDate">{{item.date}}</p>
+
+              <div class="artMeta">
+                <template is="dom-repeat" items="{{item.meta}}">
+                  <a href="#">{{item}}</a>
+                </template>
+              </div>
+
+              <div class="article">
+                <template is="dom-repeat" items="{{item.preview}}">
+                  {{item}}<p></p>
+                </template>
+              </div>
             </div>
-            <div class="article">
-              <template is="dom-repeat" items="{{item.preview}}">
-                {{item}}<p></p>
-              </template>
-            </div>
+
+            <div class="flex"></div>
+
             <div class="artFoot">
               <div class="button"><a href="{{item.link}}">Continue Reading</a></div>
             </div>
