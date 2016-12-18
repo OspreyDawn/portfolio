@@ -8,6 +8,7 @@
 
     <style>
       :host {
+        width: 100%;
         @apply(--layout-horizontal);
         @apply(--layout-justified);
       }
@@ -44,7 +45,7 @@
     </iron-media-query>
 
     <div id="prev" class="button">&#8592;</div>
-    <div id="special" class="button" mobile-layout$="{{smallScreen}}"><a href="#/Thoughts/work_item1">[[special-button-text]]</a></div>
+    <div id="special" class="button" mobile-layout$="{{smallScreen}}"><a href="{{specialButtonLink}}">[[special-button-text]]</a></div>
     <div id="next" class="button">&#8594;</div>
 
   </template>

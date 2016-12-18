@@ -9,6 +9,7 @@
 
     <style>
       :host {
+        width: 100%;
         @apply(--layout-vertical);
         @apply(--layout-justified);
       }
@@ -49,10 +50,6 @@
         height: 100%;
         margin-right: 4rem;
         margin-bottom: 2rem;
-        @apply(--layout-vertical);
-      }
-      .artMain {
-        width: 100%;
         overflow: hidden;
         @apply(--layout-vertical);
       }
@@ -133,22 +130,19 @@
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="thoughtsItem">
-            <div class="artMain flex">
-              <div id="title"><h2>{{item.title}}</h2></div>
+            <div id="title"><h2>{{item.title}}</h2></div>
+            <p class="artDate">{{item.date}}</p>
 
-              <p class="artDate">{{item.date}}</p>
+            <div class="artMeta">
+              <template is="dom-repeat" items="{{item.meta}}">
+                <a href="#">{{item}}</a>
+              </template>
+            </div>
 
-              <div class="artMeta">
-                <template is="dom-repeat" items="{{item.meta}}">
-                  <a href="#">{{item}}</a>
-                </template>
-              </div>
-
-              <div class="article flex">
-                <template is="dom-repeat" items="{{item.preview}}">
-                  {{item}}<p></p>
-                </template>
-              </div>
+            <div class="article flex">
+              <template is="dom-repeat" items="{{item.preview}}">
+                {{item}}<p></p>
+              </template>
             </div>
 
             <div class="artFoot">
@@ -164,7 +158,7 @@
       on-next-tap="_nextTap"
       query="{{query}}"
       special-button-text="Continue Reading"
-      special-button-link="openPage"
+      special-button-link="{{articleLink}}"
       mobile-layout$="{{smallScreen}}">
     </od-page-nav>
   </template>
@@ -297,6 +291,8 @@
 
           this.testArray = this.initArray;
         }
+
+        this.articleLink = this.testArray[this.indexSelector].link;
       },
 
       calcGrid: function(container, item) {
@@ -379,6 +375,8 @@
         if (this.indexSelector === (this.indexLength - 1) && indexInit === (this.indexLength - 2)) {
           this.$.pageNav.hideNextButton();
         }
+
+        this.articleLink = this.testArray[this.indexSelector].link;
       },
 
       _prevTap: function() {
