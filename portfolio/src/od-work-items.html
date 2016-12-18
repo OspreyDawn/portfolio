@@ -264,9 +264,15 @@
         gridW = Math.floor(containerW / itemW);
         gridH = Math.floor(containerH / itemH);
 
+        if (gridW === 0) {
+          gridW = 1;
+        }
+
         rawPageNum = this.testArray.length / (gridW * gridH);
 
-        if (rawPageNum > 1) {
+        if (rawPageNum === 1) {
+          calcPages = 0
+        } else if (rawPageNum > 1) {
           calcPages = Math.ceil(rawPageNum);
         } else {
           calcPages = Math.floor(rawPageNum);
@@ -283,7 +289,7 @@
         this.viewWidth = itemW * gridW;
         this.indexLength = pages;
 
-        if (this.indexLength <= 1) {
+        if (this.indexLength === 0) {
           this.$.pageNav.style.visibility = 'hidden';
         } else {
           this.$.pageNav.style.visibility = 'visible';
