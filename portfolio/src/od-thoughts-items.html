@@ -12,6 +12,9 @@
         @apply(--layout-vertical);
         @apply(--layout-justified);
       }
+      .flex {
+        @apply(--layout-flex);
+      }
       .container {
         height: calc(100vh - 13.5rem);
         position: relative;
@@ -48,12 +51,9 @@
         overflow: hidden;
         @apply(--layout-vertical);
       }
-      .thoughtsItem > h2 {
-        margin-top: 1.2rem;
-        margin-bottom: 0;
-      }
       .artDate {
         color: grey;
+        margin-top: 0;
       }
       .article {
         margin-bottom: 1rem;
@@ -74,6 +74,18 @@
         -webkit-text-fill-color: transparent;
         -webkit-background-clip: text;
       }
+      .artMeta {
+        margin-bottom: 1rem;
+      }
+      #title {
+        min-height: 6.75rem;
+        margin-bottom: 1rem;
+        @apply(--layout-horizontal);
+      }
+      #title > h2 {
+        margin: 0;
+        @apply(--layout-self-end);
+      }
       /* Mobile Screen Layout Styles */
       .container[mobile-layout] {
         height: calc(100vh - 10.5rem);
@@ -86,7 +98,7 @@
       .container[mobile-layout] .article {
         margin-bottom: 0;
       }
-      .container[mobile-layout] .artFoot{
+      .container[mobile-layout] .artFoot {
         display: none;
       }
     </style>
@@ -116,7 +128,7 @@
       <div id="itemContainer" class="container" mobile-layout$="{{smallScreen}}">
         <template is="dom-repeat" items="{{testArray}}">
           <div class="thoughtsItem">
-            <h2>{{item.title}}</h2>
+            <div id="title"><h2>{{item.title}}</h2></div>
             <p class="artDate">{{item.date}}</p>
             <div class="artMeta">
               <template is="dom-repeat" items="{{item.meta}}">
