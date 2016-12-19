@@ -84,12 +84,15 @@
         left: calc((20rem - 100vw)/ 2);
         top: calc((18.7rem - 100vh) + 15rem);
       }
-      .container[mobile-layout] od-ambient-icons .mask {
-        width: 7rem;
-        height: 7rem;
-        border-radius: 3.5rem;
-        top: calc(50% - 3.5em);
-        left: calc(50% - 3.5rem);
+      .container[mobile-layout] od-animated-portrait {
+        left: 1.5rem;
+      }
+      .container[mobile-layout] .mask {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 1.5rem;
+        top: calc(50% - 1.5em);
+        left: calc(50% - 1.5rem);
       }
     </style>
 
@@ -142,6 +145,10 @@
           }
         },
 
+        pagesReady: {
+          type: Boolean,
+          value: false
+        },
         smallScreen: {
           type: Boolean,
           value: false,
@@ -150,6 +157,12 @@
         loadIn: {
           type: Boolean,
           value: false
+        },
+        xIndex: {
+          value: 0
+        },
+        yIndex: {
+          value: 0
         }
       },
 
@@ -200,7 +213,7 @@
           }
         } else {
           if (900 > window.innerHeight) {
-            this.$.portrait.style.top = '10rem';
+            this.$.portrait.style.top = '2rem';
           } else {
             this.$.portrait.style.top = 'auto';
           }
@@ -213,15 +226,20 @@
         } else if (e.detail.indexTarget === 0) {
           this.heroSlide();
         }
-        return
+
+        this.xIndex = e.detail.indexTarget
       },
 
       slidePortraitY: function(e) {
-        if (e.detail.prevTarget === 0) {
-          this.downSlide();
-        }
-        if (e.detail.indexTarget === 0) {
-          this.upSlide();
+        this.pagesReady = e.detail.pagesReady;
+
+        if (this.pagesReady) {
+          if (e.detail.prevTarget === 0) {
+            this.downSlide();
+          }
+          if (e.detail.indexTarget === 0) {
+            this.upSlide();
+          }
         }
       },
 
@@ -283,7 +301,7 @@
         this.animationConfig['down-slide'] = {
           name: 'transform-animation',
           node: this.$.container,
-          transformTo: 'translateY(70%)'
+          transformTo: 'translateY(60%)'
         }
 
         this.playAnimation('down-slide');
@@ -295,7 +313,7 @@
         this.animationConfig['up-slide'] = {
           name: 'transform-animation',
           node: this.$.container,
-          transformFrom: 'translateY(70%)',
+          transformFrom: 'translateY(60%)',
           transformTo: 'translateY(0)',
           timing: {
             delay: 100
@@ -308,11 +326,21 @@
       loadAnimation: function() {
         travelDelta = ((28 * 16) + this.$.portrait.offsetHeight) - window.innerHeight;
 
+        if (this.xIndex === 0) {
+          travelEnd = 'translateY(0)';
+        } else {
+          if (this.smallScreen) {
+            travelEnd = 'translateY(175%)';
+          } else {
+            travelEnd = 'translateX(-83.5%)';
+          }
+        }
+
         this.animationConfig['load-in'] = [{
           name: 'transform-animation',
           node: this.$.portrait,
           transformFrom: 'translateY(-' + travelDelta + 'px)',
-          transformTo: 'translateY(0)',
+          transformTo: travelEnd,
           timing: {
             delay: 2750,
             duration: 1000,
@@ -348,7 +376,7 @@
             this.$.container.style.transform = 'none';
             break;
           case yStates.DOWN:
-            this.$.container.style.transform = 'translateY(70%)';
+            this.$.container.style.transform = 'translateY(60%)';
             break;
         }
       }

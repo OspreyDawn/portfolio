@@ -99,9 +99,9 @@
             return [];
           }
         },
-        prop1: {
-          type: String,
-          value: 'osprey-dawn',
+        pagesReady: {
+          type: Boolean,
+          value: false
         },
         route: {
           type: Object,
@@ -161,7 +161,8 @@
       indexChanged: function() {
         this.fire('site-index-changed', {
           indexTarget: this.indexSelector,
-          prevTarget: this.indexPrevious
+          prevTarget: this.indexPrevious,
+          pagesReady: this.pagesReady
         });
       },
 
@@ -216,6 +217,11 @@
         homePage = this.$.Home;
 
         if (this.pageData) {
+
+          if (!this.pagesReady) {
+            this.pagesReady = true;
+          }
+
           switch (this.pageData.page) {
             case 'About':
               this.heroState = false;
@@ -227,6 +233,7 @@
               break;
             case 'Home':
               this.indexSelector = 0;
+              this.loadingContainer = homePage.getElements('Home');
               break;
             case 'Work':
               this.indexSelector = 1;
@@ -245,9 +252,6 @@
 
             this.fire('hero-index-changed', {indexTarget: 0});
           }
-
-          this.loadingContainer = homePage.getElements('Home');
-
           this.selected = this.siteIndex[this.indexSelector];
         } else {
           this.loadingContainer = homePage.getElements('Home');

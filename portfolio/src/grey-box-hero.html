@@ -24,7 +24,7 @@
       .heroContainer {
         max-width: 42rem;
       }
-      .heroContainer > div {
+      .heroContainer > * {
         margin-bottom: 1rem;
       }
       .compressor {
@@ -36,6 +36,8 @@
         border: 1px solid lightgrey;
         border-radius: 5px;
         cursor: pointer;
+        text-decoration: none;
+        color: inherit;
         /* transition: background 0.3s, box-shadow 0.3s, transform 0.3s; */
       }
       .button:hover {
@@ -43,13 +45,6 @@
         background: lightgrey;
         /* box-shadow: 0 4px 7px rgba(0, 0, 0, 0.28);
         transform: translateY(-0.25rem); */
-      }
-      .button a {
-        width: 100%;
-        height: 100%;
-        display: block;
-        text-decoration: none;
-        color: inherit;
       }
       .heroLink {
 
@@ -87,6 +82,7 @@
       }
       .container[mobile-layout] .button {
         display: block;
+        text-align: center;
       }
       .container[mobile-layout] #logo {
         width: 28px;
@@ -111,7 +107,7 @@
         <div id="hero-text">
           A User Interface and User Experience Designer with experience in Game Design, User Research, and Product Design.
         </div>
-        <div class="button"><a href="#/About">More about me.</a></div>
+        <a class="button" href="#/About">More about me.</a>
         <div id="email-link">hello@ospreydawn.com</div>
       </div>
       <div class="compressor"></div>
