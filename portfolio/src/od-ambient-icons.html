@@ -1,6 +1,8 @@
+<link rel="import" href="../bower_components/iron-meta/iron-meta.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-iconset/iron-iconset.html">
 
-<link rel="import" href="od-icons.html">
+<link rel="import" href="od-iconset.html">
 
 <dom-module id="od-ambient-icons">
   <template>
@@ -17,6 +19,8 @@
       }
     </style>
     <content></content>
+
+    <iron-meta type="iconset" id="meta"><iron-meta>
   </template>
 
   <script>
@@ -74,15 +78,7 @@
       properties: {
         iconNameList: {
           type: Array,
-          value: ['creative-commons',
-                  'twitter',
-                  'facebook',
-                  'gavel',
-                  'expand',
-                  'images',
-                  'video',
-                  'audio',
-                  'cc-attribution']
+          value: []
         },
         canvasWidth: {
           value: 0
@@ -97,6 +93,8 @@
       },
 
       ready: function() {
+        this.iconNameList = this.$.meta.byKey('ambient-icons').getIconNames();
+
         for(i = 0; i < this.iconNameList.length; i++) {
           this.createIcon(this.iconNameList[i]);
         }
@@ -123,7 +121,7 @@
       createIcon: function(iconName) {
         var newElement = document.createElement('iron-icon');
 
-        newElement.setAttribute('icon', 'od-icons:' + iconName);
+        newElement.setAttribute('icon', iconName);
 
         Polymer.dom(this.root).appendChild(newElement);
 
