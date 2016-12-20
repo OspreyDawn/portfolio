@@ -33,14 +33,15 @@
       .compressor {
         width: 35rem;
       }
-      .heroLink {
-
-      }
       #logo {
         width: 93px;
         height: 93px;
         margin-left: calc((64px - 93px) / 2);
         margin-bottom: 1.5rem;
+      }
+      #logo iron-icon {
+        width: 100%;
+        height: 100%;
         fill: var(--indigo);
       }
       #sub-title {
@@ -74,6 +75,7 @@
       }
       .container[mobile-layout] .heroContainer > div {
         text-align: center;
+        @apply(--layout-vertical);
         @apply(--layout-center-justified);
       }
       .container[mobile-layout] .compressor {
@@ -84,7 +86,7 @@
         text-align: center;
       }
       .container[mobile-layout] #logo {
-        width: 28px;
+        width: 42px;
         height: 42px;
         margin: 0 auto 1rem auto;
       }
@@ -100,7 +102,7 @@
 
     <div class="container" mobile-layout$="{{smallScreen}}">
       <div id="heroContainer" class="heroContainer">
-        <iron-icon id="logo" icon="od-icons:logo"></iron-icon>
+        <div id="logo"><iron-icon icon="od-icons:logo"></iron-icon></div>
         <div id="sub-title">OSPREY DAWN IS</div>
         <div id="title">MAX O'BRIEN</div>
         <div id="hero-links">

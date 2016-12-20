@@ -3,19 +3,21 @@
 <link rel="import" href="../bower_components/iron-iconset/iron-iconset.html">
 
 <link rel="import" href="od-iconset.html">
+<link rel="import" href="styles/od-global-styles.html">
 
-<dom-module id="od-ambient-icons">
+<dom-module id="od-ambient-icons" attributes="small-screen">
   <template>
-    <style>
+    <style include="od-global-styles">
       iron-icon {
         display: block;
         position: absolute;
         z-index: 0;
-        width: 40px;
-        height: 40px;
-        top: calc(50% - 20px);
-        left: calc(50% - 20px);
+        width: 50px;
+        height: 50px;
+        top: calc(50% - 25px);
+        left: calc(50% - 25px);
         opacity: 0;
+        fill: var(--indigo);
       }
     </style>
     <content></content>
@@ -24,13 +26,35 @@
   </template>
 
   <script>
-    calcAnim = function(element, canvasX, canvasY) {
-      var xEnd, yEnd;
-      var animKey = [];
-      var animTime;
-      var mainAxis = Math.random() < 0.5 ? true : false;
-      var durationLength = 72000;
-      var timingDuration = Math.random() * durationLength;
+    var iterations = 0;
+
+    function shuffle(array) {
+      var currentIndex = array.length, temporaryValue, randomIndex;
+
+      // While there remain elements to shuffle...
+      while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
+    }
+
+    calcAnim = function(element, canvasX, canvasY, delay, mobile) {
+      var xEnd, yEnd,
+          animKey = [],
+          animTime,
+          mainAxis = Math.random() < 0.5 ? 'x' : 'y',
+          durationLength = 0,
+          timingDuration = Math.random() * durationLength,
+          timingDelay = 0;
 
       var pathDirection = function() {
         if (Math.random() < 0.5) {
@@ -40,11 +64,23 @@
         }
       }
 
+      if (mobile) {
+        durationLength = 72000;
+      } else {
+        durationLength = 144000;
+      }
+
+      if (delay) {
+        timingDelay = 2000 * (iterations * Math.random());
+
+        ++iterations;
+      }
+
       if (timingDuration < (durationLength / 2)) {
         timingDuration = timingDuration + (durationLength / 2);
       }
 
-      if (mainAxis) {
+      if (mainAxis === 'x') {
         xEnd = (canvasX / 2) * pathDirection();
         yEnd = (canvasY / 2) * Math.random() * pathDirection();
       } else {
@@ -52,9 +88,13 @@
         yEnd = (canvasY / 2) * pathDirection();
       }
 
+      if (yEnd > 0 && xEnd > 0) {
+        yEnd * -1;
+      }
+
       animKey = [{
           transform: 'translateX(0) translateY(0) rotate(0deg)',
-          opacity: 0.28
+          opacity: 0.77
         }, {
           transform: 'translateX(' + xEnd + 'px) translateY(' + yEnd + 'px) rotate(360deg)',
           opacity: 0
@@ -62,12 +102,13 @@
 
       animTime = {
           duration: timingDuration,
+          delay: timingDelay
         };
 
       var definedAnim = element.animate(animKey, animTime);
 
       definedAnim.onfinish = function() {
-        calcAnim(element, canvasX, canvasY);
+        calcAnim(element, canvasX, canvasY, false, mobile);
       }
     }
 
@@ -95,6 +136,8 @@
       ready: function() {
         this.iconNameList = this.$.meta.byKey('ambient-icons').getIconNames();
 
+        shuffle(this.iconNameList);
+
         for(i = 0; i < this.iconNameList.length; i++) {
           this.createIcon(this.iconNameList[i]);
         }
@@ -105,7 +148,7 @@
             p.canvasHeight = p.$$('iron-icon').parentElement.offsetHeight;
 
             for(i = 0; i < p.iconsToAnimate.length; i++) {
-              calcAnim(p.iconsToAnimate[i], p.canvasWidth, p.canvasHeight);
+              calcAnim(p.iconsToAnimate[i], p.canvasWidth, p.canvasHeight, true, p.smallScreen);
             }
           }
         }(this));
