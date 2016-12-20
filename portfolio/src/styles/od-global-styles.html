@@ -1,0 +1,79 @@
+<link href="https://fonts.googleapis.com/css?family=Lato|Montserrat:400,700" rel="stylesheet">
+
+<dom-module id="od-global-styles">
+  <template>
+    <style>
+      :root {
+        /* ### Colors ### */
+
+        /* Greys */
+        --lavender-grey: #C6C8CE;
+        --aluminium: #95989A;
+        --shuttle-grey: #63676B;
+        --licorice: #383F51;
+
+        /* Blues */
+        --link-water: #DCE2F6;
+        --tropical-blue: #B9C6EC;
+        --indigo: #5D7ACF;
+        --blue-gem: #443F9A;
+
+        /* ### Typefaces ### */
+
+        --lato: 'Lato', sans-serif;
+        --montserrat: 'Montserrat', sans-serif;
+
+        --od-body-font-style: {
+          font-family: var(--lato);
+          font-weight: 400;
+          color: var(--shuttle-grey);
+        };
+
+        --od-header-font-style: {
+          font-family: var(--montserrat);
+          font-weight: 400;
+          color: var(--licorice);
+        }
+
+        --od-link-font-style: {
+          font-family: var(--montserrat);
+          font-weight: 400;
+          color: var(--indigo);
+          text-decoration: none;
+        }
+
+        --od-bold-font-style: {
+          font-family: var(--montserrat);
+          font-weight: 700;
+        }
+      }
+      :host {
+        @apply(--od-body-font-style);
+      }
+
+      a {
+        @apply(--od-link-font-style);
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .button {
+        display: inline-block;
+        padding: 1rem;
+        border: 1px solid var(--indigo);
+        border-radius: 5px;
+        cursor: pointer;
+        color: var(--indigo);
+        font-size: calc((14/16) * 1rem);
+        transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+      }
+      .button:hover {
+        text-decoration: none;
+        color: white;
+        background: var(--indigo);
+        box-shadow: 0 4px 7px rgba(0, 0, 0, 0.28);
+        transform: translateY(-0.25rem);
+      }
+    </style>
+  </template>
+</dom-module>
