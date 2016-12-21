@@ -1,5 +1,5 @@
 .DS_Store
 build/
 build.sh
-src/content/work_items/work_items1/test_img.jpg
-src/content/work_items/work_items1/test_img.png
+src/content/work_items/work_item1/test_img.jpg
+src/content/work_items/work_item2/test_img.png
