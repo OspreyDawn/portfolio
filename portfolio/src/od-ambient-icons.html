@@ -17,7 +17,7 @@
         top: calc(50% - 25px);
         left: calc(50% - 25px);
         opacity: 0;
-        fill: var(--indigo);
+        fill: var(--default-blue);
       }
     </style>
     <content></content>
@@ -71,7 +71,7 @@
       }
 
       if (delay) {
-        timingDelay = 2000 * (iterations * Math.random());
+        timingDelay = (durationLength / 16) * (iterations * Math.random());
 
         ++iterations;
       }
