@@ -155,6 +155,10 @@
 
         window.addEventListener('WebComponentsReady', function(p) {
           return function() {
+            if (!p.loadingContainer) {
+              p.loadingContainer = p.$.home.getElements('home');
+            }
+
             p.$.loadOverlay.style.display = 'none';
             p.loadAnimation(p.loadingContainer);
           }
@@ -256,8 +260,6 @@
             this.fire('hero-index-changed', {indexTarget: 0});
           }
           this.selected = this.siteIndex[this.indexSelector];
-        } else {
-          this.loadingContainer = homePage.getElements('home');
         }
       },
 
