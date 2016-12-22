@@ -145,10 +145,6 @@
           }
         },
 
-        pagesReady: {
-          type: Boolean,
-          value: false
-        },
         smallScreen: {
           type: Boolean,
           value: false,
@@ -231,14 +227,16 @@
       },
 
       slidePortraitY: function(e) {
-        this.pagesReady = e.detail.pagesReady;
-
-        if (this.pagesReady) {
+        if (e.detail.pagesReady) {
           if (e.detail.prevTarget === 0) {
             this.downSlide();
           }
           if (e.detail.indexTarget === 0) {
             this.upSlide();
+          }
+        } else {
+          if (e.detail.prevTarget === 0) {
+            this.downSlide();
           }
         }
       },
