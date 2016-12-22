@@ -74,9 +74,9 @@
       selected="{{selected}}"
       on-neon-animation-finish="neonPageLoaded">
 
-      <hero-pager id="Home" query="{{mediaQuery}}"></hero-pager>
-      <grey-box-work id="Work" query="{{mediaQuery}}"></grey-box-work>
-      <grey-box-thoughts id="Thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
+      <hero-pager id="home" query="{{mediaQuery}}"></hero-pager>
+      <grey-box-work id="work" query="{{mediaQuery}}"></grey-box-work>
+      <grey-box-thoughts id="thoughts" query="{{mediaQuery}}"></grey-box-thoughts>
     </neon-animated-pages>
 
     <item-page-manager></item-page-manager>
@@ -217,7 +217,7 @@
 
       handleRoute: function() {
         this.indexPrevious = this.indexSelector;
-        homePage = this.$.Home;
+        homePage = this.$.home;
 
         if (this.pageData) {
 
@@ -226,7 +226,7 @@
           }
 
           switch (this.pageData.page) {
-            case 'About':
+            case 'about':
               this.heroState = false;
               this.unlisten(this, 'wheel', 'wheelFire');
 
@@ -234,14 +234,14 @@
               this.indexSelector = 0;
               this.loadingContainer = homePage.getElements(this.pageData.page);
               break;
-            case 'Home':
+            case 'home':
               this.indexSelector = 0;
-              this.loadingContainer = homePage.getElements('Home');
+              this.loadingContainer = homePage.getElements('home');
               break;
-            case 'Work':
+            case 'work':
               this.indexSelector = 1;
               break;
-            case 'Thoughts':
+            case 'thoughts':
               this.indexSelector = 2;
               break;
             default:
@@ -249,7 +249,7 @@
               return
             }
 
-          if (!this.heroState && this.pageData.page != 'About') {
+          if (!this.heroState && this.pageData.page != 'about') {
             this.heroState = true;
             this.listen(this, 'wheel', 'wheelFire');
 
@@ -257,7 +257,7 @@
           }
           this.selected = this.siteIndex[this.indexSelector];
         } else {
-          this.loadingContainer = homePage.getElements('Home');
+          this.loadingContainer = homePage.getElements('home');
         }
       },
 
