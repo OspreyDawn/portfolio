@@ -15,14 +15,18 @@
 <dom-module id="osprey-dawn">
   <template>
     <style include="od-global-styles"><style>
-
-    <style>
       item-page-manager {
         z-index: 2;
       }
       :host {
-        @apply(--layout-fullbleed);
-        overflow: hidden;
+        width: 100vw;
+        height: 100vh;
+        display: block;
+      }
+      #pages {
+        display: block;
+        width: 100%;
+        height: 100%;
       }
       #orientOverlay {
         display: none;
@@ -63,10 +67,10 @@
       data="{{pageData}}">
     </app-route>
 
-    <od-portrait
+    <!-- <od-portrait
       id="portrait"
       query="{{mediaQuery}}">
-    </od-portrait>
+    </od-portrait> -->
 
     <neon-animated-pages
       id="pages"
@@ -146,6 +150,8 @@
       },
 
       ready: function() {
+        this.iPhoneSafariCheck();
+
         for (var i = 0; i < this.$.pages.children.length; ++i) {
           this.siteIndex.push(this.$.pages.children[i].id);
         };
@@ -163,6 +169,18 @@
             p.loadAnimation(p.loadingContainer);
           }
         }(this));
+      },
+
+      iPhoneSafariCheck: function() {
+        var ua = window.navigator.userAgent,
+            iOS = !!ua.match(/iPhone/i),
+            webkit = !!ua.match(/Webkit/i),
+            iOSSafari = iOS && webkit && !ua.match(/CriOS/i) && !ua.match(/OPiOS/i);
+
+        if (iOSSafari) {
+          console.log('this user has an iPhone and is using Safari');
+          this.fire('is-mobile-safari');
+        }
       },
 
       indexChanged: function() {

@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
 <link rel="import" href="styles/od-global-styles.html">
@@ -14,6 +15,7 @@
         background: white;
         position: absolute;
         overflow: auto;
+        -webkit-overflow-scrolling: touch;
       }
       .container {
         max-width: 44rem;
@@ -48,7 +50,7 @@
         margin: 0;
       }
       #article {
-        margin:  7rem 0 10rem 0;
+        margin:  4rem 0 10rem 0;
       }
     </style>
 
@@ -57,7 +59,7 @@
       url="src/content/{{host}}_items/{{item}}/{{item}}.json"
       handle-as="json"
       last-response="{{response}}"
-      on-response="manageResponse">
+      on-response="handleResponse">
     </iron-ajax>
 
     <iron-ajax
@@ -76,15 +78,19 @@
     </div>
 
     <div id="bodyContainer" class="container">
-      <div id="article">
+      <div id="article" scroll-target="document">
+        <h2>{{response.title}}</h2>
+        <p>{{response.date}}</p>
+
+        <template is="dom-repeat" items="{{response.meta}}">
+          <a href="#/{{host}}/tags/{{item}}">{{item}}</a>
+        </template>
+
         <a href="#/work/work_item1">work-item1</a>
         <a href="#/work/work_item2">, work-item2</a>
         <a href="#/thoughts/thoughts_item1">, thoughts-item1</a>
         <a href="#/thoughts/thoughts_item2">, thoughts-item2</a>
-        <template is="dom-repeat" items="{{response.meta}}">
-          <a href="#/{{host}}/tags/{{item}}">{{item}}</a>
-        </template>
-        <p>{{response.date}}</p>
+
         <marked-element markdown="{{textResponse}}">
           <div class="markdown-html"></div>
         </marked-element>
@@ -120,13 +126,13 @@
         }
       },
 
-      listeners: {
-        'wheel' : 'scrollDetect'
+      ready: function () {
       },
 
-      manageResponse: function() {
+      handleResponse: function() {
         if (this.host === 'work') {
           this.projectPage = true;
+          this.$.article.style.marginTop = '7rem';
 
           this.headerGen();
         } else {
@@ -150,7 +156,7 @@
         header.style.backgroundColor = 'black';
       },
 
-      scrollDetect: function() {
+      /* scrollDetect: function() {
         var prevScroll, currentScroll, scrollDelta;
         var nav = this.$$('.nav').style;
         var hideNav = function(p) {
@@ -161,6 +167,8 @@
           nav.opacity = 1;
           nav.transform = 'translateZ(0) translateY(0)';
         };
+
+        console.log(this.scrollTop);
 
         this.currentScroll = this.scrollTop;
 
@@ -207,11 +215,7 @@
         }
 
         this.prevScroll = this.currentScroll;
-      },
-
-      closePage: function() {
-        this.fire('close-page');
-      }
+      }, */
     });
   </script>
 </dom-module>
