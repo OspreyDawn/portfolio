@@ -149,7 +149,6 @@
       },
 
       listeners: {
-        'is-mobile-safari' : 'handleiOSTouch',
         'wheel' : 'wheelFire',
         'wheel-state' : 'wheelState'
       },
@@ -183,8 +182,10 @@
             mobileSafari = iPhone && webkit && !ua.match(/CriOS/i) && !ua.match(/OPiOS/i);
 
         if (mobileSafari) {
-          console.log('this user has an iPhone and is using Safari');
           this.isMobileSafari = true;
+          this.style.height =  'calc(100vh - 68px)';
+
+          this.fire('is-mobile-safari');
           this.handleiOSTouch(true);
         }
       },

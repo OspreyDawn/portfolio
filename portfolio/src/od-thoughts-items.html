@@ -245,6 +245,12 @@
             }
           }
         }(this));
+
+        window.addEventListener('is-mobile-safari', function(p) {
+          return function() {
+            p.$$('.container').style.height = 'calc(100vh - 10.5rem - 68px)';
+          }
+        }(this));
       },
 
       pageStatus: function(e) {
