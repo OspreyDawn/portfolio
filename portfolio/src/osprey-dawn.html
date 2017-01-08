@@ -106,6 +106,10 @@
             return [];
           }
         },
+        isMobileSafari: {
+          type: Boolean,
+          value: false
+        },
         pagesReady: {
           type: Boolean,
           value: false
@@ -145,6 +149,7 @@
       },
 
       listeners: {
+        'is-mobile-safari' : 'handleiOSTouch',
         'wheel' : 'wheelFire',
         'wheel-state' : 'wheelState'
       },
@@ -173,14 +178,27 @@
 
       iPhoneSafariCheck: function() {
         var ua = window.navigator.userAgent,
-            iOS = !!ua.match(/iPhone/i),
+            iPhone = !!ua.match(/iPhone/i),
             webkit = !!ua.match(/Webkit/i),
-            iOSSafari = iOS && webkit && !ua.match(/CriOS/i) && !ua.match(/OPiOS/i);
+            mobileSafari = iPhone && webkit && !ua.match(/CriOS/i) && !ua.match(/OPiOS/i);
 
-        if (iOSSafari) {
+        if (mobileSafari) {
           console.log('this user has an iPhone and is using Safari');
-          this.fire('is-mobile-safari');
+          this.isMobileSafari = true;
+          this.handleiOSTouch(true);
         }
+      },
+
+      handleiOSTouch: function(bool) {
+        if (bool) {
+          document.body.addEventListener('touchmove', this.eventPrevention, false);
+        } else {
+          document.body.removeEventListener('touchmove', this.eventPrevention, false);
+        }
+      },
+
+      eventPrevention: function(e) {
+        e.preventDefault();
       },
 
       indexChanged: function() {
@@ -227,8 +245,16 @@
       wheelState: function(e) {
         if (!e.detail.active) {
           this.unlisten(this, 'wheel', 'wheelFire');
+
+          if (this.isMobileSafari) {
+            this.handleiOSTouch(false);
+          }
         } else {
           this.listen(this, 'wheel', 'wheelFire');
+
+          if (this.isMobileSafari) {
+            this.handleiOSTouch(true);
+          }
         }
       },
 
@@ -255,6 +281,10 @@
               this.fire('hero-index-changed', {indexTarget: 1});
               this.indexSelector = 0;
               this.loadingContainer = homePage.getElements(this.pageData.page);
+
+              if (this.isMobileSafari) {
+                this.handleiOSTouch(false);
+              }
               break;
             case 'home':
               this.indexSelector = 0;
@@ -276,6 +306,10 @@
             this.listen(this, 'wheel', 'wheelFire');
 
             this.fire('hero-index-changed', {indexTarget: 0});
+
+            if (this.isMobileSafari) {
+              this.handleiOSTouch(true);
+            }
           }
           this.selected = this.siteIndex[this.indexSelector];
         }
