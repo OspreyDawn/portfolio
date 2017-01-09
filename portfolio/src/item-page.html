@@ -6,7 +6,7 @@
 
 <link rel="import" href="styles/od-global-styles.html">
 
-<dom-module id="item-page" attribute="host item exit">
+<dom-module id="item-page" attribute="query host item exit">
   <template>
     <style include="od-global-styles">
       :host {
@@ -53,6 +53,11 @@
         margin:  4rem 0 10rem 0;
       }
     </style>
+
+    <iron-media-query
+      query="{{query}}"
+      query-matches="{{smallScreen}}">
+    </iron-media-query>
 
     <iron-ajax
       auto
@@ -123,6 +128,9 @@
         },
         currentScroll: {
           value: 0
+        },
+        scrollThreshold: {
+          value: 0
         }
       },
       listeners: {
@@ -130,6 +138,11 @@
       },
 
       ready: function () {
+        window.addEventListener('resize', function(p) {
+          return function() {
+            p.resizeHeader();
+          }
+        }(this));
       },
 
       handleResponse: function() {
@@ -155,8 +168,19 @@
 
         header.style.display = 'block';
         header.style.width = '100%';
-        header.style.height = '28rem';
         header.style.backgroundColor = 'black';
+
+        this.resizeHeader();
+      },
+
+      resizeHeader: function() {
+        if (this.smallScreen) {
+          header.style.height = '21rem';
+          this.scrollThreshold = 380;
+        } else {
+          header.style.height = '28rem';
+          this.scrollThreshold = 448;
+        }
       },
 
       scrollDetect: function() {
@@ -177,18 +201,18 @@
 
         if (this.projectPage) {
           if (!this.navHidden) {
-            if (scrollDelta > 0 && this.scrollTop > 448) {
+            if (scrollDelta > 0 && this.scrollTop > this.scrollThreshold) {
               hideNav(this);
               this.navHidden = true;
             }
 
-            if (this.scrollTop > 448 && !this.navFixed) {
+            if (this.scrollTop > this.scrollThreshold && !this.navFixed) {
               nav.position = 'fixed';
               nav.top = '0';
               this.navFixed = true;
             }
 
-            if (this.scrollTop < 448 && this.navFixed) {
+            if (this.scrollTop < this.scrollThreshold && this.navFixed) {
               nav.position = 'absolute';
               nav.top = 'auto';
               this.navFixed = false;
