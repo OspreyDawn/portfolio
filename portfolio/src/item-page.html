@@ -125,6 +125,9 @@
           value: 0
         }
       },
+      listeners: {
+        'scroll' : 'scrollDetect'
+      },
 
       ready: function () {
       },
@@ -156,7 +159,7 @@
         header.style.backgroundColor = 'black';
       },
 
-      /* scrollDetect: function() {
+      scrollDetect: function() {
         var prevScroll, currentScroll, scrollDelta;
         var nav = this.$$('.nav').style;
         var hideNav = function(p) {
@@ -167,8 +170,6 @@
           nav.opacity = 1;
           nav.transform = 'translateZ(0) translateY(0)';
         };
-
-        console.log(this.scrollTop);
 
         this.currentScroll = this.scrollTop;
 
@@ -215,7 +216,7 @@
         }
 
         this.prevScroll = this.currentScroll;
-      }, */
+      },
     });
   </script>
 </dom-module>
