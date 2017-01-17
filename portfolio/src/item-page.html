@@ -85,17 +85,12 @@
     <div id="bodyContainer" class="container">
       <div id="article" scroll-target="document">
         <h2>{{response.title}}</h2>
-        <p>{{response.date}}</p>
+        <p>{{response.date.day}} of {{response.date.month}}, {{response.date.year}}</p>
 
         <template is="dom-repeat" items="{{response.meta}}">
           <a href="#/{{host}}/tags/{{item}}">{{item}}</a>
         </template>
-
-        <a href="#/work/work_item1">work-item1</a>
-        <a href="#/work/work_item2">, work-item2</a>
-        <a href="#/thoughts/thoughts_item1">, thoughts-item1</a>
-        <a href="#/thoughts/thoughts_item2">, thoughts-item2</a>
-
+        
         <marked-element markdown="{{textResponse}}">
           <div class="markdown-html"></div>
         </marked-element>
@@ -164,7 +159,7 @@
         header.setAttribute('sizing', 'cover');
         header.setAttribute('preload', '');
         header.setAttribute('fade', '');
-        header.setAttribute('src', this.response.img);
+        header.setAttribute('src', this.response.head);
 
         header.style.display = 'block';
         header.style.width = '100%';
