@@ -1,4 +1,4 @@
-A logo is more than just an aesthetically pleasing glyph to represent a corporate entity. A logo is the centrepiece of your brand or experience. It's the calling card that pops up in people's mind whenever they think about a particular thing company or body. It's something you can communicate from a distance or up close. It gives those unfamiliar with a brand insight into what the relationship might be like. It sets expectations and moods that targets particular emotions you want to share with an audience so they can feel what you want them to feel. A logo is not separate from the brand it represents, it encompasses the brand; an easily communicable microcosm that is both digitally and physically flexible. 
+A logo is more than just an aesthetically pleasing glyph to represent a corporate entity. A logo is the centrepiece of your brand or experience. It's the calling card that pops up in people's mind whenever they think about a particular thing company or body. It's something you can communicate from a distance or up close. It gives those unfamiliar with a brand insight into what the relationship might be like. It sets expectations and moods that targets particular emotions you want to share with an audience so they can feel what you want them to feel. A logo is not separate from the brand it represents, it encompasses the brand; an easily communicable microcosm that is both digitally and physically flexible.
 
 So when Devi Lockwood came to me with a request for a logo for her climate change archival project, it was imperative to understand her motivations, the emotions involved, her goals, the life of her project; where was this thing going to be used? Who will see it?
 
@@ -11,6 +11,8 @@ Now we are starting to put together a picture that gives an idea of how Devi wor
 And so just like she does along her journey, I listened to her story gauging the appropriate motivations, emotions and feelings she was so invested in so that I could capture and recreate those feelings in a logo for her.
 
 I also encouraged Devi to compile a list of words or emotions she wanted to associate with her brand along with some imagery to go along with it.
+
+*Gallery to go here*
 
 Her words were:
 * water

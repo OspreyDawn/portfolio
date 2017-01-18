@@ -6,11 +6,13 @@ When I say iteration, I mean making sure each different sketch is as distinct fr
 
 Here's the first round of failures I came up with for Devi (because let's not beat around the bush, every design is a failure until proven otherwise):
 
+*Gallery to go here*
+
 1. **Geometric** - Here I was keeping it as simple as I possibly could while keeping it a little rough. This was primarily inspired by one of the images Devi provided in her look book, where geometric shapes are present but were corroded.
 
 2. **People** - This idea brought the literal idea of people into the imagery of the logo. This probably could have been explored better to signify the uniqueness in people rather than resorting to a standard ubiquitous geometric representation.
 
-3. **Eyes** - This relates back to the Binoculars (#5) example but a bit more literal; to see through the eyes of others.
+3. **Eyes** - This relates back to the Binoculars (# 5) example but a bit more literal; to see through the eyes of others.
 
 4. **Droplets** - Droplets, while cliché, speak literally to the stories about water. What I really wanted to try here is to represent the idea that Devi uses to describe herself in her article on the Guardian: one of many drops in the ocean. Here I was comparing the ideas of the stories she finds to drops in the ocean and that with enough of them, a tide of change can happen.
 
@@ -59,6 +61,8 @@ Failure is expected at this stage because there is no way for us to know we have
 Not only was Devi learning, but from her responses I was learning too. By providing a variety of options, she was able to pick and choose aspects from each of the explorations to inform her decision making. It helped us both narrow down exactly what her expectations were and adequately describe them. Seeing how Devi was analysing each of the iterations gave me a better look into how she saw herself and her project. More importantly, this in turn helped me better understand how she wanted the project to be viewed by others. This also comes down to the virtue of the fact that she is a natural writer. Unfortunately, not every client is one.
 
 From here, we had a pretty clear direction to go down. I went back and created a new set of logo designs with our new understanding in mind.
+
+*Gallery to go here*
 
 1. This one is essentially what they asked for, the previous bicycle logo with the border around it with the word 'stories' handwritten underneath.
 
