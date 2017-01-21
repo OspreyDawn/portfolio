@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
+<link rel="import" href="item-gallery.html">
 <link rel="import" href="styles/od-global-styles.html">
 
 <dom-module id="item-page" attribute="query host item exit">
@@ -43,6 +44,10 @@
       }
       .arrowButton {
         padding: 1rem 0;
+      }
+      #gallery {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
       }
       #headerTitle {
         display: inline-block;
@@ -147,6 +152,20 @@
 
           this.headerGen();
         } else {
+          if (this.response.gallery) {
+            setTimeout(function(p) {
+              return function() {
+                galleryContainer = document.querySelector('#gallery');
+
+                gallery = document.createElement('item-gallery');
+
+                galleryContainer.appendChild(gallery);
+
+                gallery.gallerylist = p.response.gallery;
+              }
+            }(this), 1000);
+          }
+
           this.projectPage = false;
         }
       },

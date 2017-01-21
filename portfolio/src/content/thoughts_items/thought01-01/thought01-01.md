@@ -12,7 +12,7 @@ And so just like she does along her journey, I listened to her story gauging the
 
 I also encouraged Devi to compile a list of words or emotions she wanted to associate with her brand along with some imagery to go along with it.
 
-*Gallery to go here*
+<div id="gallery"></div>
 
 Her words were:
 * water
