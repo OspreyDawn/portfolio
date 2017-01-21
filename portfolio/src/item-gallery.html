@@ -1,0 +1,48 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+
+<link rel="import" href="styles/od-global-styles.html">
+<link rel="import" href="od-iconset.html">
+
+<dom-module id="item-gallery">
+  <template>
+    <style include="od-global-styles">
+      :host {
+        display: block;
+        position: relative;
+        z-index: 0;
+        left: 0;
+        width: 100vw;
+        min-height: 21rem;
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+      .galleryItem {
+        min-width: 20rem;
+        height: 21rem;
+        background: black;
+        @apply(--layout-flex);
+      }
+    </style>
+
+    <template is="dom-repeat" items="{{gallerylist}}">
+      <iron-image class="galleryItem" sizing="cover" preload fade src="{{item}}"></iron-image>
+    </template>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'item-gallery',
+
+      properties: {
+        gallerylist: {
+          type: Array
+        }
+      }
+
+    });
+  </script>
+</dom-module>

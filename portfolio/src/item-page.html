@@ -29,6 +29,7 @@
         height: 6rem;
         padding: 0;
         position: absolute;
+        z-index: 1;
         background: linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 1) 60%, rgba(255, 255, 255, 0));
         opacity: 1;
         transform: translateZ(0);
@@ -152,22 +153,27 @@
 
           this.headerGen();
         } else {
-          if (this.response.gallery) {
-            setTimeout(function(p) {
-              return function() {
-                galleryContainer = document.querySelector('#gallery');
-
-                gallery = document.createElement('item-gallery');
-
-                galleryContainer.appendChild(gallery);
-
-                gallery.gallerylist = p.response.gallery;
-              }
-            }(this), 1000);
+          if (this.response.galleries) {
+            this.handleGalleries();
           }
-
           this.projectPage = false;
         }
+      },
+
+      handleGalleries: function() {
+        setTimeout(function(p) {
+          return function() {
+            galleryContainers = document.querySelectorAll('#gallery');
+
+            for (i = 0; i < galleryContainers.length; i++) {
+              gallery = document.createElement('item-gallery');
+
+              galleryContainers[i].appendChild(gallery);
+
+              gallery.gallerylist = p.response.galleries[i];
+            }
+          }
+        }(this), 1000);
       },
 
       headerGen: function() {
@@ -175,6 +181,7 @@
 
         this.insertBefore(header, this.$$('.nav'));
 
+        header.setAttribute('id', 'header');
         header.setAttribute('sizing', 'cover');
         header.setAttribute('preload', '');
         header.setAttribute('fade', '');
@@ -188,12 +195,16 @@
       },
 
       resizeHeader: function() {
-        if (this.smallScreen) {
-          header.style.height = '21rem';
-          this.scrollThreshold = 380;
-        } else {
-          header.style.height = '28rem';
-          this.scrollThreshold = 448;
+        header = document.querySelector('#header');
+
+        if (header) {
+          if (this.smallScreen) {
+            header.style.height = '21rem';
+            this.scrollThreshold = 380;
+          } else {
+            header.style.height = '28rem';
+            this.scrollThreshold = 448;
+          }
         }
       },
 
