@@ -4,7 +4,7 @@
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/marked-element/marked-element.html">
 
-<link rel="import" href="item-gallery.html">
+<!-- <link rel="import" href="item-gallery.html"> -->
 <link rel="import" href="styles/od-global-styles.html">
 
 <dom-module id="item-page" attribute="query host item exit">
@@ -46,9 +46,18 @@
       .arrowButton {
         padding: 1rem 0;
       }
-      #gallery {
+      .gallery {
         @apply(--layout-vertical);
         @apply(--layout-center);
+      }
+      .galleryItem {
+        display: block;
+        position: relative;
+        z-index: 0;
+        left: 0;
+        background-color: black;
+        width: 100vw;
+        height: 50vh;
       }
       #headerTitle {
         display: inline-block;
@@ -153,17 +162,17 @@
 
           this.headerGen();
         } else {
-          if (this.response.galleries) {
+          /* if (this.response.galleries) {
             this.handleGalleries();
-          }
+          } */
           this.projectPage = false;
         }
       },
 
-      handleGalleries: function() {
+      /* handleGalleries: function() {
         setTimeout(function(p) {
           return function() {
-            galleryContainers = document.querySelectorAll('#gallery');
+            galleryContainers = document.querySelectorAll('.gallery');
 
             for (i = 0; i < galleryContainers.length; i++) {
               gallery = document.createElement('item-gallery');
@@ -174,7 +183,7 @@
             }
           }
         }(this), 1000);
-      },
+      }, */
 
       headerGen: function() {
         header = document.createElement('iron-image');
