@@ -13,7 +13,7 @@ And so just like she does along her journey, I listened to her story gauging the
 I also encouraged Devi to compile a list of words or emotions she wanted to associate with her brand along with some imagery to go along with it.
 
 <div class="gallery">
-  <iron-image class="galleryItem" sizing="contain" preload fade src="/src/content/thoughts_items/thought01-01/gallery/1001_Stories_Lookbook.jpg"></iron-image>
+  <iron-image class="galleryItem" sizing="contain" preload fade src="/src/content/thoughts_items/160704/gallery/1001_Stories_Lookbook.jpg"></iron-image>
 </div>
 
 Her words were:
