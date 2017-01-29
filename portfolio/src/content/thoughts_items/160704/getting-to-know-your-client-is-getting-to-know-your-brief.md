@@ -29,6 +29,6 @@ One does not learn a person in one interaction, it happens over many. Only by ex
 
 In the next part in this series, I go in depth into kind of interactions that best facilitate this kind of learning.
 
-[Part 2: Fail Fast So You Can Succeed More Often.](#/thoughts/thought01-02)
+[Part 2: Fail Fast So You Can Succeed More Often.](#/thoughts/160711)
 
 —
