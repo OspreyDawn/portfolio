@@ -154,11 +154,11 @@
         this.fire('item-page-created');
 
         if (!this.currentPage) {
-          newPage.setAttribute('exit', '#/' + newPage.host);
+          newPage.setAttribute('exit', newPage.host);
         } else {
           this.previousPage = this.currentPage;
 
-          newPage.setAttribute('exit', '#/' + this.pageArray[pageIndex].host + '/' + this.pageArray[pageIndex].item);
+          newPage.setAttribute('exit', this.pageArray[pageIndex].host + '/' + this.pageArray[pageIndex].item);
         }
 
         this.pageArray.push(newPage);
